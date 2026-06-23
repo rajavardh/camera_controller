@@ -3,28 +3,19 @@
 
 class dvp_seq_item extends uvm_sequence_item; 
 
-  // ---------------------------------------------------------
-  // 1. The Dynamic Payload (Replaces static [960] and [320*240] arrays)
-  // ---------------------------------------------------------
+  // 1. The Dynamic Payload 
   rand bit [7:0] dvp_data_bytes[]; 
 
-  // ---------------------------------------------------------
-  // 2. Control Variables (Retained from Legacy)
-  // ---------------------------------------------------------
+  // 2. Control Variables 
   rand int pixels_per_line;
   rand int line_count;       
   rand bit is_rgb;           
-  rand bit [2:0] driver_sel; // Syntax fixed
-
-  // ---------------------------------------------------------
-  // 3. Timing Metadata (Added for IP-level physical timing)
-  // ---------------------------------------------------------
+  rand bit [2:0] driver_sel; 
+  
+  // 3. Timing flags
   bit is_start_of_frame;     // Tells driver to pulse VSYNC
   rand int h_blank_cycles;   // Tells driver how long to hold HREF low
 
-  // ---------------------------------------------------------
-  // UVM Macros
-  // ---------------------------------------------------------
   `uvm_object_utils_begin(dvp_seq_item)
     `uvm_field_array_int(dvp_data_bytes, UVM_ALL_ON | UVM_HEX)
     `uvm_field_int(pixels_per_line, UVM_ALL_ON | UVM_DEC)
@@ -39,9 +30,7 @@ class dvp_seq_item extends uvm_sequence_item;
     super.new(name);
   endfunction
 
-  // ---------------------------------------------------------
-  // Dynamic Sizing Constraints (Replaces valid_len)
-  // ---------------------------------------------------------
+  // Dynamic Sizing Constraints
   constraint c_payload_size {
     if (is_rgb == 1) {
       // RGB888 is 3 bytes per pixel
