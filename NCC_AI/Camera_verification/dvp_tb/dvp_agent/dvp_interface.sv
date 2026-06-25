@@ -20,7 +20,6 @@ interface camera_dvp_if (
 
     clocking cb_tb @(posedge dvp_pclk);
         default input #1step output #1ns;
-        output rst_n;
         output dvp_vsync;
         output dvp_href;
         output dvp_data;
