@@ -16,7 +16,6 @@ class dvp_agent extends uvm_agent;
 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    monitor = dvp_monitor::type_id::create("monitor", this);
     if (get_is_active() == UVM_ACTIVE) begin
       `uvm_info("DVP_AGENT", "Building DVP Agent in ACTIVE mode.", UVM_LOW)
       sequencer = dvp_sequencer::type_id::create("sequencer", this);
