@@ -12,7 +12,6 @@ class camera_vsequencer extends uvm_sequencer;
     function new(string name = "camera_ip_vsequencer", uvm_component parent = null);
         super.new(name, parent);
     endfunction : new
-
 endclass : camera_ip_vsequencer
 
 `endif
