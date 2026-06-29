@@ -3,8 +3,14 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 
+// 1. Import your custom DVP package!
+import dvp_pkg::*;
+
 module top;
 
+    // ---------------------------------------------------------
+    // Signal Declarations
+    // ---------------------------------------------------------
     logic clk;           
     logic rst_n;         
     
@@ -13,13 +19,43 @@ module top;
     
     logic dvp_pclk;      
 
+    // ---------------------------------------------------------
+    // Clock Generation
+    // ---------------------------------------------------------
+    initial begin
+        clk      = 0;
+        pclk     = 0;
+        dvp_pclk = 0;
+    end
+    
+    // Example Frequencies (Adjust delays to match your IP specs)
+    always #5  clk      = ~clk;       // 100 MHz System Clock
+    always #5  pclk     = ~pclk;      // 100 MHz APB Clock
+    always #10 dvp_pclk = ~dvp_pclk;  // 50 MHz Camera Pixel Clock
 
+    // ---------------------------------------------------------
+    // Reset Generation
+    // ---------------------------------------------------------
+    initial begin
+        rst_n   = 0;
+        presetn = 0;
+        #50; // Hold reset low for 50ns
+        rst_n   = 1;
+        presetn = 1;
+    end
+
+    // ---------------------------------------------------------
+    // Interface Instantiations
+    // ---------------------------------------------------------
     camera_dvp_if          dvp_if  (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
     axi_s_cam_cntrl_if     axi_if  (.clk(clk),           .reset(~rst_n)); 
     apb_cam_cntrl_if       apb_if  (.pclk(pclk),         .presetn(presetn));
     dma_trig_cam_cntrl_if  dma_if  (.clk(clk),           .reset_n(rst_n));
     intr_cam_cntrl_if      intr_if (.clk(clk),           .reset_n(rst_n));
 
+    // ---------------------------------------------------------
+    // DUT Instantiation
+    // ---------------------------------------------------------
     camera_controller dut (
         .rst_n                      (rst_n),
         .cam_clk                    (dvp_if.cam_clk), 
@@ -97,15 +133,16 @@ module top;
         .intr_buf_undr_err          (intr_if.intr_buf_undr_err)
     );
 
+ 
     initial begin
-        uvm_config_db#(virtual camera_dvp_if)::set(null, "*", "vif_dvp", dvp_if);
+        uvm_config_db#(virtual camera_dvp_if)::set(null, "*", "dvp_vif", dvp_if);
+        
         uvm_config_db#(virtual axi_s_cam_cntrl_if)::set(null, "*", "vif_axi", axi_if);
         uvm_config_db#(virtual apb_cam_cntrl_if)::set(null, "*", "vif_apb", apb_if);
         uvm_config_db#(virtual dma_trig_cam_cntrl_if)::set(null, "*", "vif_dma", dma_if);
         uvm_config_db#(virtual intr_cam_cntrl_if)::set(null, "*", "vif_intr", intr_if);
-
+        
         run_test();
     end
 
 endmodule
-
