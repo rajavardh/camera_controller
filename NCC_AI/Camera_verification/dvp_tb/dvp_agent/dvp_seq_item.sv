@@ -1,9 +1,7 @@
 `ifndef DVP_SEQ_ITEM_SV
 `define DVP_SEQ_ITEM_SV
 
-class dvp_seq_item extends uvm_sequence_item; 
-
-// Hardware Configuration Enums 
+// Hardware Configuration Enums (Moved outside the class)
 typedef enum bit [1:0] {
   FMT_RGB888   = 2'b00, 
   FMT_MJPEG    = 2'b01, 
@@ -17,6 +15,8 @@ typedef enum bit [1:0] {
   RES_VGA   = 2'b10, 
   RES_QVGA  = 2'b11
 } cam_resolution_e;
+
+class dvp_seq_item extends uvm_sequence_item; 
 
   // 1. The Dynamic Payload
   rand bit [7:0] dvp_data_bytes[]; 
