@@ -147,7 +147,6 @@ module top;
         // Pass the APB VIP interface (Ensure "apb_vif" matches what the VIP expects)
         uvm_config_db#(virtual apb_if)::set(null, "*", "apb_vif", apb_vip_if);
         
-        // Pass remaining interfaces
         uvm_config_db#(virtual axi_s_cam_cntrl_if)::set(null, "*", "vif_axi", axi_if);
         uvm_config_db#(virtual dma_trig_cam_cntrl_if)::set(null, "*", "vif_dma", dma_if);
         uvm_config_db#(virtual intr_cam_cntrl_if)::set(null, "*", "vif_intr", intr_if);
