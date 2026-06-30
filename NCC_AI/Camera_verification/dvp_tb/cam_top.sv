@@ -3,14 +3,19 @@
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 
-// 1. Import your custom DVP package!
-import dvp_pkg::*;
+// =========================================================
+// 1. UVM Package Imports (Must be in this exact order)
+// =========================================================
+import apb_global_pkg::*; // Corporate VIP Global
+import apb_master_pkg::*; // Corporate VIP Master Agent
+import dvp_pkg::*;        // Your Custom DVP IP
+import camera_ss_pkg::*;  // The Subsystem Glue
 
 module top;
 
-    // ---------------------------------------------------------
+    // =========================================================
     // Signal Declarations
-    // ---------------------------------------------------------
+    // =========================================================
     logic clk;           
     logic rst_n;         
     
@@ -19,9 +24,9 @@ module top;
     
     logic dvp_pclk;      
 
-    // ---------------------------------------------------------
+    // =========================================================
     // Clock Generation
-    // ---------------------------------------------------------
+    // =========================================================
     initial begin
         clk      = 0;
         pclk     = 0;
@@ -33,9 +38,9 @@ module top;
     always #5  pclk     = ~pclk;      // 100 MHz APB Clock
     always #10 dvp_pclk = ~dvp_pclk;  // 50 MHz Camera Pixel Clock
 
-    // ---------------------------------------------------------
+    // =========================================================
     // Reset Generation
-    // ---------------------------------------------------------
+    // =========================================================
     initial begin
         rst_n   = 0;
         presetn = 0;
@@ -44,18 +49,16 @@ module top;
         presetn = 1;
     end
 
-    // ---------------------------------------------------------
+    // =========================================================
     // Interface Instantiations
-    // ---------------------------------------------------------
-    camera_dvp_if          dvp_if  (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
-    axi_s_cam_cntrl_if     axi_if  (.clk(clk),           .reset(~rst_n)); 
-    apb_cam_cntrl_if       apb_if  (.pclk(pclk),         .presetn(presetn));
-    dma_trig_cam_cntrl_if  dma_if  (.clk(clk),           .reset_n(rst_n));
-    intr_cam_cntrl_if      intr_if (.clk(clk),           .reset_n(rst_n));
+    // =========================================================
+    camera_dvp_if          dvp_if      (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
 
-    // ---------------------------------------------------------
+    apb_if                 apb_vip_if  (.pclk(pclk),         .preset_n(presetn)); 
+
+    // =========================================================
     // DUT Instantiation
-    // ---------------------------------------------------------
+    // =========================================================
     camera_controller dut (
         .rst_n                      (rst_n),
         .cam_clk                    (dvp_if.cam_clk), 
@@ -108,18 +111,19 @@ module top;
         .o_axi_s_cam_cntrl_rvalid   (axi_if.o_axi_s_cam_cntrl_rvalid),
         .i_axi_s_cam_cntrl_rpoison  (axi_if.i_axi_s_cam_cntrl_rpoison),
 
+        // Wired directly to the VIP's native APB interface
         .pclk                       (pclk),
         .presetn                    (presetn),
-        .pprot                      (apb_if.pprot),
-        .psel                       (apb_if.psel),
-        .penable                    (apb_if.penable),
-        .pwrite                     (apb_if.pwrite),
-        .pstrb                      (apb_if.pstrb),
-        .paddr                      (apb_if.paddr),
-        .pwdata                     (apb_if.pwdata),
-        .prdata                     (apb_if.prdata),
-        .pslverr                    (apb_if.pslverr),
-        .pready                     (apb_if.pready),
+        .pprot                      (apb_vip_if.pprot),
+        .psel                       (apb_vip_if.psel), 
+        .penable                    (apb_vip_if.penable),
+        .pwrite                     (apb_vip_if.pwrite),
+        .pstrb                      (apb_vip_if.pstrb),
+        .paddr                      (apb_vip_if.paddr),
+        .pwdata                     (apb_vip_if.pwdata),
+        .prdata                     (apb_vip_if.prdata),
+        .pslverr                    (apb_vip_if.pslverr),
+        .pready                     (apb_vip_if.pready),
 
         .dma_trig_req               (dma_if.dma_trig_req),
         .dma_trig_req_type          (dma_if.dma_trig_req_type),
@@ -133,15 +137,22 @@ module top;
         .intr_buf_undr_err          (intr_if.intr_buf_undr_err)
     );
 
- 
+    // =========================================================
+    // UVM Setup and Execution
+    // =========================================================
     initial begin
+        // Pass the DVP custom interface
         uvm_config_db#(virtual camera_dvp_if)::set(null, "*", "dvp_vif", dvp_if);
         
+        // Pass the APB VIP interface (Ensure "apb_vif" matches what the VIP expects)
+        uvm_config_db#(virtual apb_if)::set(null, "*", "apb_vif", apb_vip_if);
+        
+        // Pass remaining interfaces
         uvm_config_db#(virtual axi_s_cam_cntrl_if)::set(null, "*", "vif_axi", axi_if);
-        uvm_config_db#(virtual apb_cam_cntrl_if)::set(null, "*", "vif_apb", apb_if);
         uvm_config_db#(virtual dma_trig_cam_cntrl_if)::set(null, "*", "vif_dma", dma_if);
         uvm_config_db#(virtual intr_cam_cntrl_if)::set(null, "*", "vif_intr", intr_if);
-        
+
+        // Triggers the test specified in the command line (+UVM_TESTNAME=camera_ss_test)
         run_test();
     end
 
