@@ -31,7 +31,8 @@ class dvp_seq_item extends uvm_sequence_item;
   rand bit [2:0] driver_sel; 
 
   // 4. Timing Metadata
-  bit      is_start_of_frame;  
+  bit      is_start_of_frame;
+  bit      is_end_of_frame;    
   rand int h_blank_cycles;     
   rand int v_pulse_cycles;     
   rand int v_blank_cycles;     
@@ -44,6 +45,7 @@ class dvp_seq_item extends uvm_sequence_item;
     `uvm_field_int(line_count, UVM_ALL_ON | UVM_DEC)
     `uvm_field_int(driver_sel, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(is_start_of_frame, UVM_ALL_ON | UVM_BIN)
+    `uvm_field_int(is_end_of_frame, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(h_blank_cycles, UVM_ALL_ON | UVM_DEC)
     `uvm_field_int(v_pulse_cycles, UVM_ALL_ON | UVM_DEC)
     `uvm_field_int(v_blank_cycles, UVM_ALL_ON | UVM_DEC)
@@ -55,10 +57,10 @@ class dvp_seq_item extends uvm_sequence_item;
   
   // 1. Map Resolution Enum to actual physical width
   constraint c_resolution_mapping {
-    if (res_cfg == RES_720P)  pixels_per_line == 1280;
-    if (res_cfg == RES_1080P) pixels_per_line == 1920;
-    if (res_cfg == RES_VGA)   pixels_per_line == 640;
-    if (res_cfg == RES_QVGA)  pixels_per_line == 320;
+    if (res_cfg == RES_720P)  { pixels_per_line == 1280; line_count == 720;  }
+    if (res_cfg == RES_1080P) { pixels_per_line == 1920; line_count == 1080; }
+    if (res_cfg == RES_VGA)   { pixels_per_line == 640;  line_count == 480;  }
+    if (res_cfg == RES_QVGA)  { pixels_per_line == 320;  line_count == 240;  }
   }
 
   // 2. Map Format Enum to Array Size 
