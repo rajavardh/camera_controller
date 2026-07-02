@@ -1,3 +1,4 @@
+
 `timescale 1ns/1ps
 
 `include "uvm_macros.svh"
@@ -33,7 +34,6 @@ module top;
         dvp_pclk = 0;
     end
     
-    // Example Frequencies (Adjust delays to match your IP specs)
     always #5  clk      = ~clk;       // 100 MHz System Clock
     always #5  pclk     = ~pclk;      // 100 MHz APB Clock
     always #10 dvp_pclk = ~dvp_pclk;  // 50 MHz Camera Pixel Clock
@@ -50,11 +50,21 @@ module top;
     end
 
     // =========================================================
-    // Interface Instantiations
+    // Interface & BFM Instantiations (THE FIX IS HERE)
     // =========================================================
     camera_dvp_if          dvp_if      (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
-
+    
+    // 1. Instantiate the raw APB pin interface
     apb_if                 apb_vip_if  (.pclk(pclk),         .preset_n(presetn)); 
+    
+    // 2. Instantiate the VIP's BFM Module and pass it the interface!
+
+    apb_master_agent_bfm   apb_bfm_wrapper (.intf(apb_vip_if));
+
+    // Remaining interfaces
+    axi_s_cam_cntrl_if     axi_if      (.aclk(clk), .aresetn(rst_n)); 
+    dma_trig_cam_cntrl_if  dma_if      (.clk(clk), .rst_n(rst_n));
+    intr_cam_cntrl_if      intr_if     (.clk(clk), .rst_n(rst_n));
 
     // =========================================================
     // DUT Instantiation
@@ -111,7 +121,7 @@ module top;
         .o_axi_s_cam_cntrl_rvalid   (axi_if.o_axi_s_cam_cntrl_rvalid),
         .i_axi_s_cam_cntrl_rpoison  (axi_if.i_axi_s_cam_cntrl_rpoison),
 
-        // Wired directly to the VIP's native APB interface
+       // Wired directly to the VIP's native APB interface
         .pclk                       (pclk),
         .presetn                    (presetn),
         .pprot                      (apb_vip_if.pprot),
@@ -125,11 +135,13 @@ module top;
         .pslverr                    (apb_vip_if.pslverr),
         .pready                     (apb_vip_if.pready),
 
+        // DMA Trigger connections
         .dma_trig_req               (dma_if.dma_trig_req),
         .dma_trig_req_type          (dma_if.dma_trig_req_type),
         .dma_trig_ack               (dma_if.dma_trig_ack),
         .dma_trig_ack_type          (dma_if.dma_trig_ack_type),
 
+        // Interrupt connections
         .intr_line_tx_dn            (intr_if.intr_line_tx_dn),
         .intr_line_in_dn            (intr_if.intr_line_in_dn),
         .intr_frm_tx_dn             (intr_if.intr_frm_tx_dn),
@@ -141,17 +153,14 @@ module top;
     // UVM Setup and Execution
     // =========================================================
     initial begin
-        // Pass the DVP custom interface
+        // Pass the custom interfaces we own
         uvm_config_db#(virtual camera_dvp_if)::set(null, "*", "dvp_vif", dvp_if);
-        
-        // Pass the APB VIP interface (Ensure "apb_vif" matches what the VIP expects)
-        uvm_config_db#(virtual apb_if)::set(null, "*", "apb_vif", apb_vip_if);
-        
         uvm_config_db#(virtual axi_s_cam_cntrl_if)::set(null, "*", "vif_axi", axi_if);
         uvm_config_db#(virtual dma_trig_cam_cntrl_if)::set(null, "*", "vif_dma", dma_if);
         uvm_config_db#(virtual intr_cam_cntrl_if)::set(null, "*", "vif_intr", intr_if);
 
-        // Triggers the test specified in the command line (+UVM_TESTNAME=camera_ss_test)
+        // The apb_master_agent_bfm module is handling the APB config_db internally.
+
         run_test();
     end
 

@@ -17,7 +17,13 @@ package camera_ss_pkg;
   `include "camera_vsequencer.sv"
   `include "camera_ss_env.sv"
 
+  // 4. Include the Sequences (Strict Order Required)
+  `include "camera_reg_cfg_seq.sv"  // APB wrapper compiles first
+  `include "camera_vseq.sv"         // Virtual sequence compiles second
+
+  // 5. Include the Tests
+  `include "camera_base_test.sv"    // Test compiles last
+
 endpackage : camera_ss_pkg
 
 `endif // CAMERA_SS_PKG_SV
-
