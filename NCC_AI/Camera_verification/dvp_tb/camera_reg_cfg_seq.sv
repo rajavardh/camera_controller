@@ -1,4 +1,4 @@
-AMERA_REG_CFG_SEQ_SV
+`ifndef CAMERA_REG_CFG_SEQ_SV
 `define CAMERA_REG_CFG_SEQ_SV
 
 class camera_reg_cfg_seq extends uvm_sequence #(apb_master_tx);

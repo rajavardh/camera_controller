@@ -8,7 +8,7 @@ class camera_vseq extends uvm_sequence;
 
     // Sub-sequence Handles
     camera_reg_cfg_seq  cam_cfg;  
-    dvp_frame_seq       dvp_seq;   
+    dvp_sequence   dvp_seq;   
 
     function new(string name = "camera_vseq");
         super.new(name);
@@ -70,7 +70,7 @@ class camera_vseq extends uvm_sequence;
         // =================================================================
         `uvm_info("VSEQ", "Phase 2: Starting DVP Video Stream...", UVM_LOW)
         
-        dvp_seq = dvp_frame_seq::type_id::create("dvp_seq");
+        dvp_seq = dvp_sequence::type_id::create("dvp_seq");
         dvp_seq.target_res = RES_VGA;
         dvp_seq.target_fmt = FMT_RGB888;
         

@@ -54,8 +54,8 @@ class camera_ss_env extends uvm_env;
 
         // 1. Link physical sequencers to the virtual sequencer
         v_seqr.dvp_seqr = dvp_ip_env.dvp_agt.sequencer;
-        v_seqr.apb_seqr = apb_vip_env.master_agent.sequencer; 
-        
+ 
+        v_seqr.apb_seqr = apb_vip_env.apb_master_agent_h.apb_master_seqr_h;
         v_seqr.apb_master_agent_cfg_h = apb_cfg.apb_master_agent_cfg_h; 
     endfunction
 

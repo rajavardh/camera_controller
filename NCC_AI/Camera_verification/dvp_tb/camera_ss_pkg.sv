@@ -9,7 +9,7 @@ package camera_ss_pkg;
   // 1. Import the Corporate APB VIP Packages
   import apb_global_pkg::*;
   import apb_master_pkg::*; 
-
+  import apb_env_pkg::*;
   // 2. Import your custom DVP Package
   import dvp_pkg::*;
 
