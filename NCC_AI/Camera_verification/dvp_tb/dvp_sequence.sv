@@ -2,13 +2,15 @@
 `define DVP_SEQUENCE_SV
 
 class dvp_sequence extends uvm_sequence #(dvp_seq_item);
-    `uvm_object_utils(dvp_frame_seq)
+    // FIXED: Now perfectly matches the class name
+    `uvm_object_utils(dvp_sequence)
 
     // Sequence configuration (Set these from the test to change frame type)
     cam_resolution_e target_res = RES_VGA;
     cam_format_e     target_fmt = FMT_RGB888;
 
-    function new(string name = "dvp_frame_seq");
+    // FIXED: Updated the default name to match as well
+    function new(string name = "dvp_sequence");
         super.new(name);
     endfunction
 
@@ -58,4 +60,4 @@ class dvp_sequence extends uvm_sequence #(dvp_seq_item);
     endtask
 endclass
 
-`endif // DVP_FRAME_SEQ_SV
+`endif // DVP_SEQUENCE_SV

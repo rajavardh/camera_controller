@@ -1,0 +1,114 @@
+# do run.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# QuestaSim vmap 10.6c Lib Mapping Utility 2017.07 Jul 25 2017
+# vmap work work 
+# Modifying modelsim.ini
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:48 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/globals" ./apb_avip/globals/apb_global_pkg.sv 
+# -- Compiling package apb_global_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:13:48 on Jul 03,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:48 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/hvl_top/master" ./apb_avip/hvl_top/master/apb_master_pkg.sv 
+# -- Compiling package apb_master_pkg
+# ** Note: (vlog-2286) ./apb_avip/hvl_top/master/apb_master_pkg.sv(13): Using implicit +incdir+/tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package apb_global_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:13:48 on Jul 03,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:48 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/hdl_top/apb_if" ./apb_avip/hdl_top/apb_if/apb_if.sv 
+# -- Compiling package apb_if_sv_unit
+# -- Importing package apb_global_pkg
+# -- Compiling interface apb_if
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:13:48 on Jul 03,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:48 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/hdl_top/master_agent_bfm" ./apb_avip/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv 
+# ** Note: (vlog-2286) ./apb_avip/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv(32): Using implicit +incdir+/tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# -- Compiling package apb_master_driver_bfm_sv_unit
+# -- Importing package apb_global_pkg
+# -- Compiling interface apb_master_driver_bfm
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package apb_master_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:13:49 on Jul 03,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:49 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/hdl_top/master_agent_bfm" ./apb_avip/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv 
+# ** Note: (vlog-2286) ./apb_avip/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv(31): Using implicit +incdir+/tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# -- Compiling package apb_master_monitor_bfm_sv_unit
+# -- Importing package apb_global_pkg
+# -- Compiling interface apb_master_monitor_bfm
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# -- Importing package apb_master_pkg
+# 
+# Top level modules:
+# 	--none--
+# End time: 12:13:50 on Jul 03,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:50 on Jul 03,2026
+# vlog -work work "+incdir+./apb_avip/hdl_top/master_agent_bfm" ./apb_avip/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv 
+# -- Compiling module apb_master_agent_bfm
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# ** Note: (vlog-2286) ./apb_avip/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv(14): Using implicit +incdir+/tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# 
+# Top level modules:
+# 	apb_master_agent_bfm
+# End time: 12:13:50 on Jul 03,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# QuestaSim vlog 10.6c Compiler 2017.07 Jul 25 2017
+# Start time: 12:13:50 on Jul 03,2026
+# vlog -work work "+incdir+." "+incdir+./dvp_agent" ./dvp_pkg.sv 
+# -- Compiling package dvp_pkg
+# -- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+# ** Note: (vlog-2286) ./dvp_pkg.sv(7): Using implicit +incdir+/tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+# ** Error: ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): (vlog-2730) Undefined variable: 'dvp_frame_seq'.
+# ** Error: (vlog-13069) ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): near ";": syntax error, unexpected ';', expecting '('.
+# ** Error: ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): (vlog-2730) Undefined variable: 'tmp'.
+# ** Error: (vlog-13069) ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): near ";": syntax error, unexpected ';', expecting '('.
+# ** Error: ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): Illegal declaration after the statement near line '5'.  Declarations must precede statements.  Look for stray semicolons.
+# ** Error: (vlog-13069) ** while parsing file included at ./dvp_pkg.sv(14)
+# ** while parsing macro expansion: 'uvm_object_utils' starting at dvp_sequence.sv(5)
+# ** at dvp_sequence.sv(5): near "end": syntax error, unexpected end.
+# ** Error: ** while parsing file included at ./dvp_pkg.sv(14)
+# ** at dvp_sequence.sv(11): Illegal declaration after the statement near line '8'.  Declarations must precede statements.  Look for stray semicolons.
+# ** Error: ** while parsing file included at ./dvp_pkg.sv(14)
+# ** at dvp_sequence.sv(12): 'super.new()' call can be made only from within a class constructor.
+# ** Error: ./dvp_pkg.sv(17): Cannot find `include file "dvp_env.sv" in directories:
+#     ., ./dvp_agent, /tools/mentor/questasim_10.6c/questasim/ovm-2.1.2/../verilog_src/ovm-2.1.2/src, /tools/mentor/questasim_10.6c/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src
+# End time: 12:13:50 on Jul 03,2026, Elapsed time: 0:00:00
+# Errors: 9, Warnings: 0
+# ** Error: /tools/mentor/questasim_10.6c/questasim/linux/vlog failed.
+# Error in macro ./run.do line 22
+# /tools/mentor/questasim_10.6c/questasim/linux/vlog failed.
+#     while executing
+# "vlog -work work +incdir+. +incdir+./dvp_agent ./dvp_pkg.sv"
+# Break key hit

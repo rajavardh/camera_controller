@@ -14,7 +14,7 @@ package dvp_pkg;
   `include "dvp_sequence.sv" 
   `include "dvp_scoreboard.sv"
   `include "dvp_subscriber.sv"
-  `include "dvp_env.sv"
+  `include "dvp_environment.sv"
 
 endpackage : dvp_pkg
 
