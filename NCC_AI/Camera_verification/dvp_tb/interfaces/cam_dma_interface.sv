@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 interface dma_trig_cam_cntrl_if (input logic clk, input logic reset_n);
 
   logic       dma_trig_req;       // From DUT

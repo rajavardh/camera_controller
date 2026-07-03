@@ -1,4 +1,6 @@
 
+`timescale 1ns/1ps
+
 interface camera_dvp_if (
     input logic dvp_pclk, 
     input logic rst_n     
@@ -25,6 +27,13 @@ interface camera_dvp_if (
         output dvp_data;
         input  cam_clk;
     endclocking
-
+    
+    clocking cb_mon @(posedge dvp_pclk);
+        input rst_n;
+        input dvp_vsync;
+        input dvp_href;
+        input dvp_data;
+        input cam_clk;
+    endclocking
 endinterface
 
