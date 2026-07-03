@@ -23,41 +23,45 @@ vlog -work work +incdir+./apb_avip/hdl_top/slave_agent_bfm ./apb_avip/hdl_top/sl
 vlog -work work +incdir+./apb_avip/hdl_top/slave_agent_bfm ./apb_avip/hdl_top/slave_agent_bfm/apb_slave_monitor_bfm.sv
 vlog -work work +incdir+./apb_avip/hdl_top/slave_agent_bfm ./apb_avip/hdl_top/slave_agent_bfm/apb_slave_agent_bfm.sv
 
-# 3. Compile your Custom DVP and Subsystem Packages
+# 3. Compile Custom UVM DVP and Subsystem Packages
 vlog -work work +incdir+. +incdir+./dvp_agent ./dvp_pkg.sv
 vlog -work work +incdir+. ./camera_ss_pkg.sv
 
-# 4. Compile the Interfaces and RTL Submodules
-# Interfaces
-vlog -work work +incdir+. ./camera_dvp_if.sv
-vlog -work work +incdir+. ./axi_s_cam_cntrl_if.sv
-vlog -work work +incdir+. ./dma_trig_cam_cntrl_if.sv
-vlog -work work +incdir+. ./intr_cam_cntrl_if.sv
+# 4. Compile Hardware Interfaces
+vlog -work work +incdir+./interfaces ./interfaces/dvp_interface.sv
+vlog -work work +incdir+./interfaces ./interfaces/cam_axi_interface.sv
+vlog -work work +incdir+./interfaces ./interfaces/cam_dma_interface.sv
+vlog -work work +incdir+./interfaces ./interfaces/cam_intr_interface.sv
 
-# RTL Submodules
-vlog -work work +incdir+. ./mux_sync.sv
-vlog -work work +incdir+. ./sync_ff.sv
-vlog -work work +incdir+. ./intr_req_ack.sv
-vlog -work work +incdir+. ./camera_data_pipe.sv
-vlog -work work +incdir+. ./cam_reg_apb_if_stub.sv
-vlog -work work +incdir+. ./axi5_sram_ctrl_stub.sv
+# 5. Compile Common RTL Submodules
+# (Paths set relative to running inside the dvp_tb directory)
+set COMMON_PATH "../common"
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/mux_sync.sv
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/sync_ff.sv
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/intr_req_ack.sv
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/axi5_sram_ctrl_stub.sv
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/sram_wrapper.sv
+vlog -work work +incdir+$COMMON_PATH $COMMON_PATH/sram_8KB_stub.v
 
-# Top-Level RTL
-vlog -work work +incdir+. ./camera_controller.sv 
+# 6. Compile Controller RTL Modules
+set RTL_PATH "../camera_controller"
+vlog -work work +incdir+$RTL_PATH $RTL_PATH/cam_reg_apb_if_stub.v
+vlog -work work +incdir+$RTL_PATH $RTL_PATH/camera_data_pipe.sv
+vlog -work work +incdir+$RTL_PATH $RTL_PATH/camera_controller.sv 
 
-# 5. Compile the Top-Level Testbench File
+# 7. Compile Top-Level Testbench Module
 vlog -work work +incdir+. ./cam_top.sv 
 
-# 6. Load the simulation with UVM (Targeting the 'top' module)
+# 8. Load the simulation with UVM
 vsim -voptargs=+acc -t 1ps \
      -L work \
      +UVM_TESTNAME=camera_base_test \
      work.top
 
-# 7. Add waveforms and run
+# 9. Add Waveforms
 add wave -position insertpoint sim:/top/apb_vip_if/*
 add wave -position insertpoint sim:/top/dvp_if/*
 add wave -position insertpoint sim:/top/dut/*
 
-# Run for 10 microseconds
+# 10. Run simulation
 run 10us
