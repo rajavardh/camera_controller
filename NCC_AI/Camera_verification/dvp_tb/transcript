@@ -1,0 +1,20 @@
+# ** Warning: (vsim-8689) Ignoring plusarg '+acc'.  Did you mean '-voptargs=+acc'?
+# vsim -c -do "run 10us; quit -f" "+acc" -L work "+UVM_TESTNAME=camera_base_test" work.top 
+# Start time: 16:56:50 on Jul 03,2026
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Error: ./cam_top.sv(62): Module 'apb_master_agent_bfm' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(195): Module 'mux_sync' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(209): Module 'sync_ff' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(220): Module 'sync_ff' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(231): Module 'intr_req_ack' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(244): Module 'intr_req_ack' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(257): Module 'intr_req_ack' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(271): Module 'intr_req_ack' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(284): Module 'intr_req_ack' is not defined.
+# ** Error: ../camera_controller/camera_data_pipe.sv(812): Module 'sram_wrapper' is not defined.
+# ** Error: ../camera_controller/camera_data_pipe.sv(825): Module 'sram_wrapper' is not defined.
+# ** Error: ../camera_controller/camera_controller.sv(390): Module 'axi5_sram_ctrl_stub' is not defined.
+# Optimization failed
+# Error loading design
+# End time: 16:56:51 on Jul 03,2026, Elapsed time: 0:00:01
+# Errors: 12, Warnings: 1
