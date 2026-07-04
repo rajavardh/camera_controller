@@ -38,12 +38,22 @@ module top;
     always #10 dvp_pclk = ~dvp_pclk;  // 50 MHz Camera Pixel Clock
 
     // =========================================================
-    // Reset Generation
+    // Reset Generation (UPDATED FOR VIP NEGEDGE DETECTION)
     // =========================================================
     initial begin
+        // 1. Start HIGH so the VIP is active at time 0
+        rst_n   = 1;
+        presetn = 1;
+        
+        // 2. Wait a few nanoseconds, then trigger the NEGEDGE
+        #5; 
         rst_n   = 0;
         presetn = 0;
-        #50; // Hold reset low for 50ns
+        
+        // 3. Hold reset low for 50ns
+        #50; 
+        
+        // 4. Release reset (Trigger the POSEDGE)
         rst_n   = 1;
         presetn = 1;
     end

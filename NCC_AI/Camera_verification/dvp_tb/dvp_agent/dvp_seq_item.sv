@@ -31,8 +31,8 @@ class dvp_seq_item extends uvm_sequence_item;
   rand bit [2:0] driver_sel; 
 
   // 4. Timing Metadata
-  bit      is_start_of_frame;
-  bit      is_end_of_frame;    
+ rand   bit      is_start_of_frame;
+  rand bit      is_end_of_frame;    
   rand int h_blank_cycles;     
   rand int v_pulse_cycles;     
   rand int v_blank_cycles;     

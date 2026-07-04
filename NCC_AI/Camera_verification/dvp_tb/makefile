@@ -63,7 +63,7 @@ compile:
 	$(VLOG) -work work $(INC_DIR) ./cam_top.sv
 
 sim:
-	$(VSIM) -c -do "run 10us; quit -f" $(VOPT_ARGS) -L work +UVM_TESTNAME=camera_base_test work.top 
+	$(VSIM) -c -do "run -all; quit -f" $(VOPT_ARGS) -L work +UVM_TESTNAME=camera_base_test  work.top 
 
 clean:
 	rm -rf work modelsim.ini transcript
