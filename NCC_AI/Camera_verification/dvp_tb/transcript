@@ -1,20 +1,105 @@
 # ** Warning: (vsim-8689) Ignoring plusarg '+acc'.  Did you mean '-voptargs=+acc'?
 # vsim -c -do "run 10us; quit -f" "+acc" -L work "+UVM_TESTNAME=camera_base_test" work.top 
-# Start time: 16:56:50 on Jul 03,2026
+# Start time: 11:07:53 on Jul 04,2026
 # ** Note: (vsim-3812) Design is being optimized...
-# ** Error: ./cam_top.sv(62): Module 'apb_master_agent_bfm' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(195): Module 'mux_sync' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(209): Module 'sync_ff' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(220): Module 'sync_ff' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(231): Module 'intr_req_ack' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(244): Module 'intr_req_ack' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(257): Module 'intr_req_ack' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(271): Module 'intr_req_ack' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(284): Module 'intr_req_ack' is not defined.
-# ** Error: ../camera_controller/camera_data_pipe.sv(812): Module 'sram_wrapper' is not defined.
-# ** Error: ../camera_controller/camera_data_pipe.sv(825): Module 'sram_wrapper' is not defined.
-# ** Error: ../camera_controller/camera_controller.sv(390): Module 'axi5_sram_ctrl_stub' is not defined.
-# Optimization failed
+# ** Warning: ./cam_top.sv(72): (vopt-2685) [TFMPC] - Too few port connections for 'dut'.  Expected 84, found 27.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_b_empty'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_a_empty'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_b_full'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_a_full'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_a_select'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'SCR1_CAM_SRAM_EMA'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'SCR1_CAM_SRAM_EMAW'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'SCR1_CAM_SRAM_EMAS'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cfg_gate_resp'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_ext_gt_qacceptn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_ext_gt_qreqn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_pwr_qactive'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_pwr_qdeny'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_pwr_qacceptn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_pwr_qreqn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_clk_qactive'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_clk_qdeny'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_clk_qacceptn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_clk_qreqn'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rpoison'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rvalid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rresp'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_rready'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rlast'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_rdata'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_bvalid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_bresp'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_bready'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_bid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_wpoison'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_wvalid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_wstrb'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_wready'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_wlast'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_wdata'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awqos'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awprot'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awlock'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awvalid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awsize'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_awready'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awlen'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awburst'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awakeup'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_awaddr'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arqos'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arprot'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arlock'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arvalid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arsize'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'o_axi_s_cam_cntrl_arready'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arlen'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arid'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_arburst'.
+# ** Warning: ./cam_top.sv(72): (vopt-2718) [TFMPC] - Missing connection for port 'i_axi_s_cam_cntrl_araddr'.
+# ** Warning: (vopt-3838) ./interfaces/dvp_interface.sv(12): Variable 'cam_clk' written by continuous and procedural assignments. 
+# One of the assignments is implicit. See ./cam_top.sv(74). Variable is procedurally driven by cam_clk in clocking block cb_ctrl. See (./interfaces/dvp_interface.sv:14).
+# 
+# //  Questa Sim
+# //  Version 10.6c linux Jul 25 2017
+# //
+# //  Copyright 1991-2017 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading sv_std.std
+# Loading work.apb_global_pkg(fast)
+# Loading work.apb_master_monitor_bfm_sv_unit(fast)
+# Loading work.apb_master_driver_bfm_sv_unit(fast)
+# Loading work.apb_if_sv_unit(fast)
+# Loading work.camera_dvp_if(fast)
+# Loading mtiUvm.uvm_pkg
+# Loading work.dvp_pkg(fast)
+# Loading work.apb_slave_pkg(fast)
+# Loading work.apb_master_driver_bfm(fast)
+# Loading work.apb_master_monitor_bfm(fast)
+# Loading work.apb_master_pkg(fast)
+# Loading work.apb_env_pkg(fast)
+# Loading work.camera_ss_pkg(fast)
+# Loading work.cam_top_sv_unit(fast)
+# Loading work.top(fast)
+# Loading work.cam_reg_apb_if_stub(fast)
+# Loading mtiUvm.questa_uvm_pkg(fast)
+# Loading work.dma_trig_cam_cntrl_if(fast)
+# Loading work.intr_cam_cntrl_if(fast)
+# ** Fatal: (vsim-8451) ./apb_avip/hvl_top/slave/apb_slave_monitor_proxy.sv(71): Virtual interface resolution cannot find a matching instance for 'virtual apb_slave_monitor_bfm'.
+#    Time: 0 ps  Iteration: 0  Region: /apb_slave_pkg File: ./apb_avip/hvl_top/slave/apb_slave_agent.sv
+# FATAL ERROR while loading design
 # Error loading design
-# End time: 16:56:51 on Jul 03,2026, Elapsed time: 0:00:01
-# Errors: 12, Warnings: 1
+# End time: 11:07:56 on Jul 04,2026, Elapsed time: 0:00:03
+# Errors: 1, Warnings: 60

@@ -8,12 +8,11 @@ VIP_DIR   = ./apb_avip
 VLOG      = vlog
 VSIM      = vsim
 VOPT_ARGS = +acc
-
-# Added virtual_sequencer, dvp_agent, and interfaces to the include paths!
 INC_DIR   = +incdir+$(VIP_DIR)/globals+$(VIP_DIR)/hvl_top/env+$(VIP_DIR)/hvl_top/env/virtual_sequencer+$(RTL_DIR)+$(TB_DIR)+$(TB_DIR)/dvp_agent+$(TB_DIR)/interfaces
 
 # --- Compilation ---
 all: clean lib compile sim
+
 lib:
 	vlib work
 	vmap work work
@@ -45,7 +44,7 @@ compile:
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/intr_req_ack.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/axi5_sram_ctrl_stub.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_wrapper.sv
-	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_8KB_stub.v
+	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_8kb_stub.sv
 	
 	$(VLOG) -work work $(INC_DIR) $(RTL_DIR)/cam_reg_apb_if_stub.v
 	$(VLOG) -work work $(INC_DIR) $(RTL_DIR)/camera_data_pipe.sv
@@ -56,7 +55,7 @@ compile:
 	#$(VLOG) -work work -timescale 1ns/1ps $(INC_DIR) $(VIP_DIR)/hdl_top/hdl_top.sv
 
 sim:
-	$(VSIM) -c -do "run 10us; quit -f" $(VOPT_ARGS) -L work +UVM_TESTNAME=camera_base_test  work.top 
+	$(VSIM) -c -do "run 10us; quit -f" $(VOPT_ARGS) -L work +UVM_TESTNAME=camera_base_test work.top 
 
 clean:
 	rm -rf work modelsim.ini transcript
