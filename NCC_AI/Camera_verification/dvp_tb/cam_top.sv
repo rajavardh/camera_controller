@@ -53,14 +53,36 @@ module top;
     // =========================================================
     camera_dvp_if          dvp_if      (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
     
-    // 1. Instantiate the raw APB pin interface
+    // 1. Instantiate the raw APB pin interface (The REAL bus)
     apb_if                 apb_vip_if  (.pclk(pclk),         .preset_n(presetn)); 
     
     // 2. Instantiate the VIP's Master BFM Module
     apb_master_agent_bfm   apb_bfm_wrapper (.intf(apb_vip_if));
     
-    // 3. Instantiate the VIP's Slave BFM Module (Required by the VIP Environment)
-    apb_slave_agent_bfm    apb_slave_bfm_wrapper (.intf(apb_vip_if));
+    // -------------------------------------------------------------
+    // 3. VIP Slave BFM Instantiation (Modified to prevent multi-driver)
+    // -------------------------------------------------------------
+    // We create a dummy interface. The Slave Driver connects to this so 
+    // it doesn't fight the DUT. The Monitor connects to the real bus.
+    apb_if dummy_apb_if (.pclk(pclk), .preset_n(presetn));
+
+    apb_slave_driver_bfm apb_slave_drv_bfm_h(
+        .pclk(dummy_apb_if.pclk),       .preset_n(dummy_apb_if.preset_n),
+        .psel(dummy_apb_if.pselx),      .penable(dummy_apb_if.penable),
+        .pprot(dummy_apb_if.pprot),     .paddr(dummy_apb_if.paddr),
+        .pwrite(dummy_apb_if.pwrite),   .pwdata(dummy_apb_if.pwdata),
+        .pstrb(dummy_apb_if.pstrb),     .pslverr(dummy_apb_if.pslverr),
+        .pready(dummy_apb_if.pready),   .prdata(dummy_apb_if.prdata)
+    );
+
+    apb_slave_monitor_bfm apb_slave_mon_bfm_h (
+        .pclk(apb_vip_if.pclk),         .preset_n(apb_vip_if.preset_n),
+        .psel(apb_vip_if.pselx),        .paddr(apb_vip_if.paddr),
+        .pwrite(apb_vip_if.pwrite),     .pwdata(apb_vip_if.pwdata),
+        .pstrb(apb_vip_if.pstrb),       .pslverr(apb_vip_if.pslverr),
+        .pready(apb_vip_if.pready),     .prdata(apb_vip_if.prdata),
+        .penable(apb_vip_if.penable),   .pprot(apb_vip_if.pprot)
+    );
 
     // Remaining interfaces
     //TODO FIX axi_s_cam_cntrl_if     axi_if      (.aclk(clk), .aresetn(rst_n)); 
@@ -79,50 +101,7 @@ module top;
         .dvp_pclk                   (dvp_pclk),
         .dvp_data                   (dvp_if.dvp_data),
 
-        //.i_axi_s_cam_cntrl_araddr   (axi_if.i_axi_s_cam_cntrl_araddr),
-        //.i_axi_s_cam_cntrl_arburst  (axi_if.i_axi_s_cam_cntrl_arburst),
-        //.i_axi_s_cam_cntrl_arid     (axi_if.i_axi_s_cam_cntrl_arid),
-        //.i_axi_s_cam_cntrl_arlen    (axi_if.i_axi_s_cam_cntrl_arlen),
-        //.o_axi_s_cam_cntrl_arready  (axi_if.o_axi_s_cam_cntrl_arready),
-        //.i_axi_s_cam_cntrl_arsize   (axi_if.i_axi_s_cam_cntrl_arsize),
-        //.i_axi_s_cam_cntrl_arvalid  (axi_if.i_axi_s_cam_cntrl_arvalid),
-        //.i_axi_s_cam_cntrl_arlock   (axi_if.i_axi_s_cam_cntrl_arlock),
-        //.i_axi_s_cam_cntrl_arprot   (axi_if.i_axi_s_cam_cntrl_arprot),
-        //.i_axi_s_cam_cntrl_arqos    (axi_if.i_axi_s_cam_cntrl_arqos),
-
-        //.i_axi_s_cam_cntrl_awaddr   (axi_if.i_axi_s_cam_cntrl_awaddr),
-        //.i_axi_s_cam_cntrl_awakeup  (axi_if.i_axi_s_cam_cntrl_awakeup),
-        //.i_axi_s_cam_cntrl_awburst  (axi_if.i_axi_s_cam_cntrl_awburst),
-        //.i_axi_s_cam_cntrl_awid     (axi_if.i_axi_s_cam_cntrl_awid),
-        //.i_axi_s_cam_cntrl_awlen    (axi_if.i_axi_s_cam_cntrl_awlen),
-        //.o_axi_s_cam_cntrl_awready  (axi_if.o_axi_s_cam_cntrl_awready),
-        //.i_axi_s_cam_cntrl_awsize   (axi_if.i_axi_s_cam_cntrl_awsize),
-        //.i_axi_s_cam_cntrl_awvalid  (axi_if.i_axi_s_cam_cntrl_awvalid),
-        //.i_axi_s_cam_cntrl_awlock   (axi_if.i_axi_s_cam_cntrl_awlock),
-        //.i_axi_s_cam_cntrl_awprot   (axi_if.i_axi_s_cam_cntrl_awprot),
-        //.i_axi_s_cam_cntrl_awqos    (axi_if.i_axi_s_cam_cntrl_awqos),
-
-        //.i_axi_s_cam_cntrl_wdata    (axi_if.i_axi_s_cam_cntrl_wdata),
-        //.i_axi_s_cam_cntrl_wlast    (axi_if.i_axi_s_cam_cntrl_wlast),
-        //.o_axi_s_cam_cntrl_wready   (axi_if.o_axi_s_cam_cntrl_wready),
-        //.i_axi_s_cam_cntrl_wstrb    (axi_if.i_axi_s_cam_cntrl_wstrb),
-        //.i_axi_s_cam_cntrl_wvalid   (axi_if.i_axi_s_cam_cntrl_wvalid),
-        //.i_axi_s_cam_cntrl_wpoison  (axi_if.i_axi_s_cam_cntrl_wpoison),
-
-        //.o_axi_s_cam_cntrl_bid      (axi_if.o_axi_s_cam_cntrl_bid),
-        //.i_axi_s_cam_cntrl_bready   (axi_if.i_axi_s_cam_cntrl_bready),
-        //.o_axi_s_cam_cntrl_bresp    (axi_if.o_axi_s_cam_cntrl_bresp),
-        //.o_axi_s_cam_cntrl_bvalid   (axi_if.o_axi_s_cam_cntrl_bvalid),
-
-        //.o_axi_s_cam_cntrl_rdata    (axi_if.o_axi_s_cam_cntrl_rdata),
-        //.o_axi_s_cam_cntrl_rid      (axi_if.o_axi_s_cam_cntrl_rid),
-        //.o_axi_s_cam_cntrl_rlast    (axi_if.o_axi_s_cam_cntrl_rlast),
-        //.i_axi_s_cam_cntrl_rready   (axi_if.i_axi_s_cam_cntrl_rready),
-        //.o_axi_s_cam_cntrl_rresp    (axi_if.o_axi_s_cam_cntrl_rresp),
-        //.o_axi_s_cam_cntrl_rvalid   (axi_if.o_axi_s_cam_cntrl_rvalid),
-        //.o_axi_s_cam_cntrl_rpoison  (axi_if.o_axi_s_cam_cntrl_rpoison),
-
-       // Wired directly to the VIP's native APB interface
+        // Wired directly to the VIP's native APB interface
         .pclk                       (pclk),
         .presetn                    (presetn),
         .pprot                      (apb_vip_if.pprot),
@@ -160,7 +139,9 @@ module top;
         uvm_config_db#(virtual dma_trig_cam_cntrl_if)::set(null, "*", "vif_dma", dma_if);
         uvm_config_db#(virtual intr_cam_cntrl_if)::set(null, "*", "vif_intr", intr_if);
 
-        // The apb_master_agent_bfm module is handling the APB config_db internally.
+        // Manually pass the split slave BFMs to the environment
+        uvm_config_db#(virtual apb_slave_driver_bfm)::set(null,"*", "apb_slave_driver_bfm_0", apb_slave_drv_bfm_h); 
+        uvm_config_db#(virtual apb_slave_monitor_bfm)::set(null,"*", "apb_slave_monitor_bfm_0", apb_slave_mon_bfm_h);
 
         run_test();
     end
