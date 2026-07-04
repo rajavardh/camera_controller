@@ -9,7 +9,6 @@ class camera_ss_env extends uvm_env;
     apb_env            apb_vip_env; 
     camera_vsequencer  v_seqr;    
     
-    //declare this here so both build_phase and connect_phase can see it!
     apb_env_config     apb_cfg;  
 
     function new(string name = "camera_ss_env", uvm_component parent = null);
@@ -23,24 +22,24 @@ class camera_ss_env extends uvm_env;
         begin
             apb_cfg = apb_env_config::type_id::create("apb_cfg");
             
-            apb_cfg.has_scoreboard   = 0; 
+            apb_cfg.has_scoreboard   = 1; 
             apb_cfg.has_virtual_seqr = 0; 
-            apb_cfg.no_of_slaves     = 0; // VIP should build 0 slave agents
+            apb_cfg.no_of_slaves     = 0; 
 
             // Configure the Master Agent
             apb_cfg.apb_master_agent_cfg_h = apb_master_agent_config::type_id::create("apb_master_agent_cfg_h");
-            
             apb_cfg.apb_master_agent_cfg_h.is_active = UVM_ACTIVE; 
-            
-            // Tell the Master Agent it is communicating with 1 physical slave (the DUT)
             apb_cfg.apb_master_agent_cfg_h.no_of_slaves = 1; 
 
-            // IMPORTANT: Feed the VIP the memory map of your Camera IP!
-            // SLAVE 0 gets the CAMERA_Base address range
+            // Memory Map
             apb_cfg.apb_master_agent_cfg_h.master_min_addr_range(0, 32'h07109000); 
             apb_cfg.apb_master_agent_cfg_h.master_max_addr_range(0, 32'h07109FFF); 
             
-            uvm_config_db#(apb_env_config)::set(this, "apb_vip_env*", "apb_env_config", apb_cfg);
+            // ====================================================================
+            // NUCLEAR OPTION: Global config_db set 
+            // ====================================================================
+            uvm_config_db#(apb_env_config)::set(null, "*", "apb_env_config", apb_cfg);
+            uvm_config_db#(apb_master_agent_config)::set(null, "*", "apb_master_agent_config", apb_cfg.apb_master_agent_cfg_h);
         end
 
         // 3. Build Components

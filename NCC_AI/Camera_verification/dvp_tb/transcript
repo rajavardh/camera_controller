@@ -1,6 +1,6 @@
 # ** Warning: (vsim-8689) Ignoring plusarg '+acc'.  Did you mean '-voptargs=+acc'?
 # vsim -c -do "run 10us; quit -f" "+acc" -L work "+UVM_TESTNAME=camera_base_test" work.top 
-# Start time: 11:32:28 on Jul 04,2026
+# Start time: 12:17:22 on Jul 04,2026
 # ** Note: (vsim-3812) Design is being optimized...
 # ** Warning: ./cam_top.sv(95): (vopt-2685) [TFMPC] - Too few port connections for 'dut'.  Expected 84, found 27.
 # ** Warning: ./cam_top.sv(95): (vopt-2718) [TFMPC] - Missing connection for port 'dbg_cam_buffer_b_empty'.
@@ -134,25 +134,72 @@
 # UVM_INFO ./apb_avip/hdl_top/slave_agent_bfm/apb_slave_driver_bfm.sv(51) @ 0: reporter [APB_SLAVE_DRIVER_BFM] APB_SLAVE_DRIVER_BFM
 # UVM_INFO ./apb_avip/hdl_top/slave_agent_bfm/apb_slave_monitor_bfm.sv(48) @ 0: reporter [APB_SLAVE_MONITOR_BFM] APB_SLAVE_MONITOR_BFM
 # UVM_INFO @ 0: reporter [RNTST] Running test camera_base_test...
-# UVM_FATAL ./apb_avip/hvl_top/master/apb_master_agent.sv(68) @ 0: uvm_test_top.env.apb_vip_env.apb_master_agent [FATAL_MA_CANNOT_GET_APB_MASTER_AGENT_CONFIG] cannot get apb_master_agent_cfg_h from uvm_config_db
+# UVM_INFO dvp_agent.sv(24) @ 0: uvm_test_top.env.dvp_ip_env.dvp_agt [DVP_AGENT] Building DVP Agent in ACTIVE mode.
+# UVM_INFO @ 0: reporter [UVMTOP] UVM testbench topology:
+# ---------------------------------------------------------------------------
+# Name                                Type                        Size  Value
+# ---------------------------------------------------------------------------
+# uvm_test_top                        camera_base_test            -     @504 
+#   env                               camera_ss_env               -     @511 
+#     apb_vip_env                     apb_env                     -     @535 
+#       apb_master_agent              apb_master_agent            -     @652 
+#         apb_master_drv_proxy_h      apb_master_driver_proxy     -     @762 
+#           rsp_port                  uvm_analysis_port           -     @777 
+#           seq_item_port             uvm_seq_item_pull_port      -     @769 
+#         apb_master_mon_proxy_h      apb_master_monitor_proxy    -     @894 
+#           apb_master_analysis_port  uvm_analysis_port           -     @901 
+#         apb_master_seqr_h           apb_master_sequencer        -     @785 
+#           rsp_export                uvm_analysis_export         -     @792 
+#           seq_item_export           uvm_seq_item_pull_imp       -     @886 
+#           arbitration_queue         array                       0     -    
+#           lock_queue                array                       0     -    
+#           num_last_reqs             integral                    32    'd1  
+#           num_last_rsps             integral                    32    'd1  
+#       apb_scoreboard_h              apb_scoreboard              -     @659 
+#         apb_master_analysis_fifo    uvm_tlm_analysis_fifo #(T)  -     @666 
+#           analysis_export           uvm_analysis_imp            -     @705 
+#           get_ap                    uvm_analysis_port           -     @697 
+#           get_peek_export           uvm_get_peek_imp            -     @681 
+#           put_ap                    uvm_analysis_port           -     @689 
+#           put_export                uvm_put_imp                 -     @673 
+#         apb_slave_analysis_fifo[0]  uvm_tlm_analysis_fifo #(T)  -     @713 
+#           analysis_export           uvm_analysis_imp            -     @752 
+#           get_ap                    uvm_analysis_port           -     @744 
+#           get_peek_export           uvm_get_peek_imp            -     @728 
+#           put_ap                    uvm_analysis_port           -     @736 
+#           put_export                uvm_put_imp                 -     @720 
+#     dvp_ip_env                      dvp_env                     -     @528 
+#       dvp_agt                       dvp_agent                   -     @917 
+#         driver                      dvp_driver                  -     @1079
+#           rsp_port                  uvm_analysis_port           -     @1094
+#           seq_item_port             uvm_seq_item_pull_port      -     @1086
+#         monitor                     dvp_monitor                 -     @955 
+#           cam_ap                    uvm_analysis_port           -     @962 
+#         sequencer                   dvp_sequencer               -     @970 
+#           rsp_export                uvm_analysis_export         -     @977 
+#           seq_item_export           uvm_seq_item_pull_imp       -     @1071
+#           arbitration_queue         array                       0     -    
+#           lock_queue                array                       0     -    
+#           num_last_reqs             integral                    32    'd1  
+#           num_last_rsps             integral                    32    'd1  
+#       scb                           dvp_scoreboard              -     @924 
+#         cam_export                  uvm_analysis_imp            -     @931 
+#       sub                           dvp_subscriber              -     @939 
+#         cam_export                  uvm_analysis_imp            -     @946 
+#     v_seqr                          camera_vsequencer           -     @542 
+#       rsp_export                    uvm_analysis_export         -     @549 
+#       seq_item_export               uvm_seq_item_pull_imp       -     @643 
+#       arbitration_queue             array                       0     -    
+#       lock_queue                    array                       0     -    
+#       num_last_reqs                 integral                    32    'd1  
+#       num_last_rsps                 integral                    32    'd1  
+# ---------------------------------------------------------------------------
 # 
-# --- UVM Report Summary ---
-# 
-# ** Report counts by severity
-# UVM_INFO :    8
-# UVM_WARNING :    0
-# UVM_ERROR :    0
-# UVM_FATAL :    1
-# ** Report counts by id
-# [APB_MASTER_DRIVER_BFM]     1
-# [APB_MASTER_MONITOR_BFM]     1
-# [APB_SLAVE_DRIVER_BFM]     1
-# [APB_SLAVE_MONITOR_BFM]     1
-# [FATAL_MA_CANNOT_GET_APB_MASTER_AGENT_CONFIG]     1
-# [Questa UVM]     2
-# [RNTST]     1
-# [apb master agent bfm]     1
-# ** Note: $finish    : /tools/mentor/questasim_10.6c/questasim/linux/../verilog_src/uvm-1.1d/src/base/uvm_report_object.svh(292)
-#    Time: 0 ps  Iteration: 8  Region: /uvm_pkg::uvm_phase::m_run_phases
-# End time: 11:32:32 on Jul 04,2026, Elapsed time: 0:00:04
+# UVM_INFO camera_base_test.sv(27) @ 0: uvm_test_top [TEST] Starting Subsystem Virtual Sequence (APB Config + DVP Stream)...
+# UVM_INFO ./dvp_agent/dvp_monitor.sv(35) @ 0: uvm_test_top.env.dvp_ip_env.dvp_agt.monitor [DVP_MON] Starting DVP Monitor observation loop...
+# UVM_INFO ./apb_avip/hvl_top/master/apb_master_monitor_proxy.sv(84) @ 0: uvm_test_top.env.apb_vip_env.apb_master_agent.apb_master_mon_proxy_h [apb_master_monitor_proxy] Inside the master_monitor_proxy
+# UVM_INFO camera_vseq.sv(18) @ 0: uvm_test_top.env.v_seqr@@vseq [VSEQ] Starting Camera Subsystem Sanity Virtual Sequence
+# UVM_INFO camera_vseq.sv(23) @ 0: uvm_test_top.env.v_seqr@@vseq [VSEQ] Phase 1: Configuring DUT directly via APB...
+#  quit -f
+# End time: 12:17:26 on Jul 04,2026, Elapsed time: 0:00:04
 # Errors: 0, Warnings: 61
