@@ -1,4 +1,3 @@
-
 `timescale 1ns/1ps
 
 `include "uvm_macros.svh"
@@ -50,16 +49,18 @@ module top;
     end
 
     // =========================================================
-    // Interface & BFM Instantiations (THE FIX IS HERE)
+    // Interface & BFM Instantiations
     // =========================================================
     camera_dvp_if          dvp_if      (.dvp_pclk(dvp_pclk), .rst_n(rst_n));
     
     // 1. Instantiate the raw APB pin interface
     apb_if                 apb_vip_if  (.pclk(pclk),         .preset_n(presetn)); 
     
-    // 2. Instantiate the VIP's BFM Module and pass it the interface!
-
+    // 2. Instantiate the VIP's Master BFM Module
     apb_master_agent_bfm   apb_bfm_wrapper (.intf(apb_vip_if));
+    
+    // 3. Instantiate the VIP's Slave BFM Module (Required by the VIP Environment)
+    apb_slave_agent_bfm    apb_slave_bfm_wrapper (.intf(apb_vip_if));
 
     // Remaining interfaces
     //TODO FIX axi_s_cam_cntrl_if     axi_if      (.aclk(clk), .aresetn(rst_n)); 

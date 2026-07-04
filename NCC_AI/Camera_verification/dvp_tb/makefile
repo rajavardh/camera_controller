@@ -18,14 +18,23 @@ lib:
 	vmap work work
 
 compile:
-	# Compile APB VIP
+	# Compile APB VIP Packages
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/globals/apb_global_pkg.sv
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hvl_top/master/apb_master_pkg.sv
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hvl_top/slave/apb_slave_pkg.sv
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hvl_top/env/apb_env_pkg.sv
+	
+	# Master BFMs
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/master_agent_bfm/apb_master_agent_bfm.sv
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/master_agent_bfm/apb_master_driver_bfm.sv
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/master_agent_bfm/apb_master_monitor_bfm.sv
+	
+	# Slave BFMs
+	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/slave_agent_bfm/apb_slave_agent_bfm.sv
+	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/slave_agent_bfm/apb_slave_driver_bfm.sv
+	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/slave_agent_bfm/apb_slave_monitor_bfm.sv
+	
+	# VIP Interface
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/hdl_top/apb_if/apb_if.sv
 	
 	# Compile DVP and Subsystem Packages
@@ -52,7 +61,6 @@ compile:
 	
 	# Compile Top
 	$(VLOG) -work work $(INC_DIR) ./cam_top.sv
-	#$(VLOG) -work work -timescale 1ns/1ps $(INC_DIR) $(VIP_DIR)/hdl_top/hdl_top.sv
 
 sim:
 	$(VSIM) -c -do "run 10us; quit -f" $(VOPT_ARGS) -L work +UVM_TESTNAME=camera_base_test work.top 
