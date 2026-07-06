@@ -2,14 +2,13 @@
 `define DVP_SEQUENCE_SV
 
 class dvp_sequence extends uvm_sequence #(dvp_seq_item);
-    // FIXED: Now perfectly matches the class name
+
     `uvm_object_utils(dvp_sequence)
 
     // Sequence configuration (Set these from the test to change frame type)
     cam_resolution_e target_res = RES_VGA;
     cam_format_e     target_fmt = FMT_RGB888;
 
-    // FIXED: Updated the default name to match as well
     function new(string name = "dvp_sequence");
         super.new(name);
     endfunction
@@ -52,6 +51,9 @@ class dvp_sequence extends uvm_sequence #(dvp_seq_item);
             }) begin
                 `uvm_error("DVP_SEQ", "Failed to randomize active line!")
             end
+            
+            // assign the loop counter to the item!
+            req.line_id = line; 
             
             finish_item(req);
         end

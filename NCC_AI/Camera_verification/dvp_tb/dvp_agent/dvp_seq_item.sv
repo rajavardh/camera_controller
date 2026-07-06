@@ -28,10 +28,16 @@ class dvp_seq_item extends uvm_sequence_item;
   // 3. Derived Variables 
   rand int pixels_per_line;
   rand int line_count;       
+  
+  // ==========================================
+  // ADDED: The actual Line ID for tracking!
+  // ==========================================
+  int line_id;               
+  
   rand bit [2:0] driver_sel; 
 
   // 4. Timing Metadata
- rand   bit      is_start_of_frame;
+  rand bit      is_start_of_frame;
   rand bit      is_end_of_frame;    
   rand int h_blank_cycles;     
   rand int v_pulse_cycles;     
@@ -43,6 +49,7 @@ class dvp_seq_item extends uvm_sequence_item;
     `uvm_field_enum(cam_resolution_e, res_cfg, UVM_ALL_ON)
     `uvm_field_int(pixels_per_line, UVM_ALL_ON | UVM_DEC)
     `uvm_field_int(line_count, UVM_ALL_ON | UVM_DEC)
+    `uvm_field_int(line_id, UVM_ALL_ON | UVM_DEC) // ADDED TO MACROS
     `uvm_field_int(driver_sel, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(is_start_of_frame, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(is_end_of_frame, UVM_ALL_ON | UVM_BIN)

@@ -24,11 +24,9 @@ class dvp_driver extends uvm_driver #(dvp_seq_item);
         forever begin
             seq_item_port.get_next_item(req);
             
-            // Updated uvm_info to reflect the new Enum and line-by-line architecture
-            `uvm_info(get_type_name(), $sformatf("Driving Line ID: %0d | Resolution Width: %0d | Format: %s", 
-                      req.line_count, req.pixels_per_line, req.format_cfg.name()), UVM_LOW)
+           `uvm_info("dvp_driver", $sformatf("Driving Line ID: %0d | Resolution Width: %0d | Format: %s", req.line_id, req.pixels_per_line, req.format_cfg.name()), UVM_LOW)
             
-            drive_line(req); // Renamed from drive_frame for clarity
+            drive_line(req); 
             
             seq_item_port.item_done();
         end

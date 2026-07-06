@@ -16,8 +16,7 @@ class dvp_scoreboard extends uvm_scoreboard;
   // The Write Function 
 
   virtual function void write(dvp_seq_item item);
-    `uvm_info("DVP_SCB", $sformatf("SUCCESS! Scoreboard received Line %0d. Format: %s",item.line_count, item.format_cfg.name()), UVM_MEDIUM)
-    
+    `uvm_info("DVP_SCB", $sformatf("SUCCESS! Scoreboard received Line %0d. Format: %s", item.line_id, item.format_cfg.name()), UVM_LOW)   
     // logic for comparision 
   endfunction
 
