@@ -1,44 +1,68 @@
+
 `ifndef CAMERA_REG_CFG_SEQ_SV
 `define CAMERA_REG_CFG_SEQ_SV
 
-class camera_reg_cfg_seq extends uvm_sequence #(apb_master_tx);
-    `uvm_object_utils(camera_reg_cfg_seq)
-
-    // 1. Tell UVM this sequence explicitly runs on the APB sequencer
+class camera_reg_base_seq extends uvm_sequence #(apb_master_tx);
+    `uvm_object_utils(camera_reg_base_seq)
     `uvm_declare_p_sequencer(apb_master_sequencer)
 
-    // The explicit targets you want to write to the DUT
-    rand bit [31:0] target_addr;
-    rand bit [31:0] target_data;
-
-    function new(string name="camera_reg_cfg_seq");
+    function new(string name="camera_reg_base_seq");
         super.new(name);
     endfunction
 
     virtual task body();
-        req = apb_master_tx::type_id::create("req");
+        `uvm_info("REG_BASE", "Inside camera base register seq: Camera Enable & Generic Configurations...", UVM_LOW)
         
-        // 2. Grab the config natively from the physical sequencer!
-        req.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
+        write_reg(32'h0710901C, 32'h0000_001F); //  Interrupt Mask Reg
+        write_reg(32'h07109024, 32'h0000_0000); //  DMA Control Reg
+        write_reg(32'h07109020, 32'h0000_0001); //  Camera Enable / Control
+
+    endtask
+
+
+    virtual task write_reg(bit [31:0] addr, bit [31:0] data);
+        apb_master_tx write_tx = apb_master_tx::type_id::create("write_tx");
         
-        start_item(req);
+        start_item(write_tx); 
         
-        // 3. Let the VIP handle the protocol control signals
-        if (!req.randomize() with {
+        write_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h; 
+        
+        if (!write_tx.randomize() with {
             pwrite        == WRITE;
             pselx         == SLAVE_0;
             transfer_size == BIT_32;
         }) begin
-            `uvm_error("APB_SEQ", "Failed to randomize APB protocol control signals")
+            `uvm_error("APB_API", "Failed to randomize APB write transaction rules")
         end
         
-        // 4. The Override: Overwrite whatever random garbage the VIP put in the address/data
-        req.paddr  = target_addr;
-        req.pwdata = target_data;
+        write_tx.paddr  = addr;
+        write_tx.pwdata = data;
         
-        // 5. Send the exact transaction to the driver
-        finish_item(req);
+        finish_item(write_tx); 
+    endtask
+
+    virtual task read_reg(bit [31:0] addr, output bit [31:0] data);
+        apb_master_tx read_tx = apb_master_tx::type_id::create("read_tx");
+        
+        start_item(read_tx);
+        
+        read_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
+        
+        if (!read_tx.randomize() with {
+            pwrite        == READ; // Change protocol operation to READ
+            pselx         == SLAVE_0;
+            transfer_size == BIT_32;
+        }) begin
+            `uvm_error("APB_API", "Failed to randomize APB read transaction rules")
+        end
+        
+        read_tx.paddr = addr; 
+        
+        finish_item(read_tx); 
+        
+        data = read_tx.prdata; 
     endtask
 endclass
 
-`endif // CAMERA_REG_CFG_SEQ_SV
+`endif // CAMERA_REG_SEQ_PKG_SV
+
