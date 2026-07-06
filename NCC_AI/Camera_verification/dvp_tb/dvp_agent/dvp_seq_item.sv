@@ -29,9 +29,6 @@ class dvp_seq_item extends uvm_sequence_item;
   rand int pixels_per_line;
   rand int line_count;       
   
-  // ==========================================
-  // ADDED: The actual Line ID for tracking!
-  // ==========================================
   int line_id;               
   
   rand bit [2:0] driver_sel; 
