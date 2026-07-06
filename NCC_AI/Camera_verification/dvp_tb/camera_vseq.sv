@@ -14,11 +14,11 @@ class camera_vseq extends uvm_sequence;
         super.new(name);
     endfunction
 
-   /* virtual task body();
+    virtual task body();
         `uvm_info("VSEQ", "Starting Camera Subsystem Sanity Virtual Sequence", UVM_LOW)
 
         // =================================================================
-        // PHASE 1: APB Register Configuration 
+        // PHASE 1: APB Register Configuration (RE-ENABLED)
         // =================================================================
         #100ns;
         `uvm_info("VSEQ", "Phase 1: Configuring DUT directly via APB...", UVM_LOW)
@@ -64,31 +64,7 @@ class camera_vseq extends uvm_sequence;
         `uvm_info("VSEQ", "Phase 2: Starting DVP Video Stream...", UVM_LOW)
         
         dvp_seq = dvp_sequence::type_id::create("dvp_seq");
-        dvp_seq.target_res = RES_VGA;
-        dvp_seq.target_fmt = FMT_RGB888;
-        
-        dvp_seq.start(p_sequencer.dvp_seqr);
-
-        `uvm_info("VSEQ", "Camera Subsystem Sanity Virtual Sequence Complete", UVM_LOW)
-    endtask*/
- virtual task body();
-        `uvm_info("VSEQ", "Starting Camera Subsystem Sanity Virtual Sequence", UVM_LOW)
-
-        // =================================================================
-        // PHASE 1: APB Register Configuration (BYPASSED)
-        // =================================================================
-        #100ns;
-        `uvm_info("VSEQ", "Phase 1: Bypassing APB Config because RTL is a stub...", UVM_LOW)
-
-        // --- Hardware Settle Time ---
-        #200ns; 
-
-        // =================================================================
-        // PHASE 2: DVP Video Streaming
-        // =================================================================
-        `uvm_info("VSEQ", "Phase 2: Starting DVP Video Stream...", UVM_LOW)
-        
-        dvp_seq = dvp_sequence::type_id::create("dvp_seq");
+        // Using QVGA for a faster simulation run
         dvp_seq.target_res = RES_QVGA; 
         dvp_seq.target_fmt = FMT_RGB888;
         

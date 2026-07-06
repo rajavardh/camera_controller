@@ -61,7 +61,7 @@ module cam_reg_apb_if_stub
   assign  dma_ctrl_trig_mask_out            =    1'b0;  
   assign  debug_ctrl_sram_buffer_out        =    1'b0;  
   assign  debug_ctrl_debug_en_out           =    1'b0;  
-  assign  PREADY                            =    1'b0;  
+  assign  PREADY                            =    1'b1;  
   assign  PRDATA                            =    32'b0;  
   assign  PSLVERR                           =    1'b0;  
 
