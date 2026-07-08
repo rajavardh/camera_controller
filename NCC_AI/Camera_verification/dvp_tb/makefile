@@ -1,20 +1,22 @@
-TB_DIR     = .
-RTL_DIR    = ../camera_controller
-COMMON_DIR = ../camera_controller/common
-VIP_DIR    = ./apb_avip
+# ==============================================================================
+# Default Target (Runs compile, then sim automatically)
+# ==============================================================================
+all: compile sim
 
-# --- Compiler Flags ---
+# ==============================================================================
+# Environment Variables & Include Directories
+# ==============================================================================
+VIP_DIR    = ./apb_avip
+COMMON_DIR = ../camera_controller/common/
+RTL_DIR    = ../camera_controller
 VLOG       = vlog
 VSIM       = vsim
-INC_DIR    = +incdir+$(VIP_DIR)/globals+$(VIP_DIR)/hvl_top/env+$(VIP_DIR)/hvl_top/env/virtual_sequencer+$(RTL_DIR)+$(TB_DIR)+$(TB_DIR)/dvp_agent+$(TB_DIR)/interfaces
 
-# --- Compilation ---
-all: clean lib compile sim
+INC_DIR = +incdir+$(VIP_DIR)/globals+$(VIP_DIR)/hvl_top/env+$(VIP_DIR)/hvl_top/env/virtual_sequencer+$(VIP_DIR)/hvl_top/test/sequences/master_sequences+../camera_controller+.+./dvp_agent+./interfaces
 
-lib:
-	vlib work
-	vmap work work
-
+# ==============================================================================
+# Compilation Targets
+# ==============================================================================
 compile:
 	# Compile APB VIP Packages
 	$(VLOG) -work work $(INC_DIR) $(VIP_DIR)/globals/apb_global_pkg.sv

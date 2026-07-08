@@ -1,16 +1,18 @@
-
 `ifndef CAMERA_REG_CFG_SEQ_SV
 `define CAMERA_REG_CFG_SEQ_SV
 
-class camera_reg_base_seq extends uvm_sequence #(apb_master_tx);
+class camera_reg_base_seq extends apb_master_base_seq;
     `uvm_object_utils(camera_reg_base_seq)
-    `uvm_declare_p_sequencer(apb_master_sequencer)
+    
 
     function new(string name="camera_reg_base_seq");
         super.new(name);
     endfunction
 
     virtual task body();
+        // 2. CRITICAL: Call the base class body to execute the $cast check
+        super.body();
+
         `uvm_info("REG_BASE", "Inside camera base register seq: Camera Enable & Generic Configurations...", UVM_LOW)
         
         write_reg(32'h0710901C, 32'h0000_001F); //  Interrupt Mask Reg
@@ -19,6 +21,9 @@ class camera_reg_base_seq extends uvm_sequence #(apb_master_tx);
 
     endtask
 
+    // ========================================================================
+    // Custom API Tasks 
+    // ========================================================================
 
     virtual task write_reg(bit [31:0] addr, bit [31:0] data);
         apb_master_tx write_tx = apb_master_tx::type_id::create("write_tx");
@@ -49,7 +54,7 @@ class camera_reg_base_seq extends uvm_sequence #(apb_master_tx);
         read_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
         
         if (!read_tx.randomize() with {
-            pwrite        == READ; // Change protocol operation to READ
+            pwrite        == READ; 
             pselx         == SLAVE_0;
             transfer_size == BIT_32;
         }) begin
@@ -64,5 +69,4 @@ class camera_reg_base_seq extends uvm_sequence #(apb_master_tx);
     endtask
 endclass
 
-`endif // CAMERA_REG_SEQ_PKG_SV
-
+`endif // CAMERA_REG_CFG_SEQ_SV

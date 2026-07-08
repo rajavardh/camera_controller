@@ -3,26 +3,31 @@
 
 package camera_ss_pkg;
 
-  import uvm_pkg::*;
-  `include "uvm_macros.svh"
+   import uvm_pkg::*;
+   `include "uvm_macros.svh"
 
-  // 1. Import the Corporate APB VIP Packages
-  import apb_global_pkg::*;
-  import apb_master_pkg::*; 
-  import apb_env_pkg::*;
-  // 2. Import your custom DVP Package
-  import dvp_pkg::*;
+   // APB VIP Packages
+   import apb_global_pkg::*;
+   import apb_master_pkg::*;
+   import apb_env_pkg::*;
+   import apb_slave_pkg::*;
+   
+   import axi4_globals_pkg::*;
+   import axi4_master_pkg::*;
+   
+   // DVP Package
+   import dvp_pkg::*;
 
-  // 3. Include the Subsystem Integration Components
-  `include "camera_vsequencer.sv"
-  `include "camera_ss_env.sv"
+   // Integration Components
+   `include "camera_vsequencer.sv"
+   `include "camera_ss_env.sv"
 
-  // 4. Include the Sequences (Strict Order Required)
-  `include "camera_reg_cfg_seq.sv"  // APB wrapper compiles first
-  `include "camera_vseq.sv"         // Virtual sequence compiles second
-
-  // 5. Include the Tests
-  `include "camera_base_test.sv"    // Test compiles last
+   // Sequences & Test
+   `include "apb_master_base_seq.sv" // VIP Base
+   `include "camera_reg_cfg_seq.sv"  // Our wrapper
+   `include "camera_axi_read_seq.sv" // Our AXI read
+   `include "camera_vseq.sv"         // Virtual sequence
+   `include "camera_base_test.sv"    // Test
 
 endpackage : camera_ss_pkg
 
