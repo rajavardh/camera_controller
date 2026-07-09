@@ -5,7 +5,7 @@ class camera_base_test extends uvm_test;
    `uvm_component_utils(camera_base_test)
 
    camera_ss_env env;
-
+   camera_report_server srv;
    cam_resolution_e test_res = RES_QVGA;
    cam_format_e     test_fmt = FMT_RGB888;
    
@@ -17,6 +17,8 @@ class camera_base_test extends uvm_test;
    virtual function void build_phase(uvm_phase phase);
       super.build_phase(phase);
       env = camera_ss_env::type_id::create("env", this);
+  //    srv = new();
+  //    uvm_report_server::set_server(srv);
    endfunction
 
    // Run Phase

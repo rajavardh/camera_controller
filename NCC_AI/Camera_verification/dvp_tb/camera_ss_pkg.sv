@@ -23,6 +23,7 @@ package camera_ss_pkg;
    `include "camera_ss_env.sv"
 
    // Sequences & Test
+   `include "camera_report_server.sv"
    `include "apb_master_base_seq.sv" // VIP Base
    `include "camera_reg_cfg_seq.sv"  // Our wrapper
    `include "camera_axi_read_seq.sv" // Our AXI read
