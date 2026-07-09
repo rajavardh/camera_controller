@@ -1,21 +1,21 @@
 `ifndef CAMERA_AXI_READ_SEQ_SV
 `define CAMERA_AXI_READ_SEQ_SV
 
-class camera_axi_read_seq extends axi4_master_base_seq;
+// Bypassing the VIP's proprietary base sequence
+class camera_axi_read_seq extends uvm_sequence #(axi4_master_tx);
     `uvm_object_utils(camera_axi_read_seq)
 
     // -------------------------------------------------------
     // Knobs controlled by the Virtual Sequence
     // -------------------------------------------------------
     rand bit [31:0] target_addr;
-    rand bit [7:0]  burst_length; 
+    rand bit [7:0]  burst_length;
 
     function new(string name = "camera_axi_read_seq");
         super.new(name);
     endfunction
 
     task body();
-        
         axi4_master_tx req;
         uvm_sequence_item rsp;
         int id;
@@ -24,16 +24,15 @@ class camera_axi_read_seq extends axi4_master_base_seq;
         
         start_item(req);
         
-        // Randomize the VIP's req item using our custom knobs
+        // Scoped the enums to avoid APB/AXI package collisions
         if(!req.randomize() with {
-            req.tx_type       == READ;              // VIP Enum for Read
-            req.arsize        == READ_8_BYTES;      // 64-bit data width (Change to READ_16_BYTES if 128-bit!)
-            req.arburst       == READ_INCR;         // Incremental burst
-            req.transfer_type == OUTSTANDING_READ;  // VIP Enum for outstanding
-
-            // ---> THE CRITICAL ADDITIONS <---
-            req.araddr        == target_addr;       // Point to the ping-pong buffer!
-            req.arlen         == burst_length;      // Tell it how many beats to read!
+            tx_type       == axi4_globals_pkg::READ;              
+            arsize        == axi4_globals_pkg::READ_8_BYTES;      
+            arburst       == axi4_globals_pkg::READ_INCR;         
+            transfer_type == axi4_globals_pkg::OUTSTANDING_READ;  
+            
+            araddr        == target_addr;       
+            arlen         == burst_length;      
         }) begin
             `uvm_fatal("CAM_AXI_SEQ", "Randomization of AXI read failed")
         end
@@ -42,8 +41,6 @@ class camera_axi_read_seq extends axi4_master_base_seq;
         
         finish_item(req);
 
-        // Crucial: The VIP Driver sends a response back when the read finishes.
-        // We must pull it out of the queue, otherwise the sequencer gets clogged!
         id = req.get_transaction_id();
         get_response(rsp, id);
         

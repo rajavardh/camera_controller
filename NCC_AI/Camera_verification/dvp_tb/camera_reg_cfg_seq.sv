@@ -1,41 +1,28 @@
 `ifndef CAMERA_REG_CFG_SEQ_SV
 `define CAMERA_REG_CFG_SEQ_SV
 
-class camera_reg_base_seq extends apb_master_base_seq;
-    `uvm_object_utils(camera_reg_base_seq)
-    
+class camera_reg_cfg_seq extends uvm_sequence; // (or your specific APB base sequence)
+    `uvm_object_utils(camera_reg_cfg_seq)
+    `uvm_declare_p_sequencer(apb_master_sequencer)
 
-    function new(string name="camera_reg_base_seq");
+    function new(string name = "camera_reg_cfg_seq");
         super.new(name);
     endfunction
 
-    virtual task body();
-        // 2. CRITICAL: Call the base class body to execute the $cast check
-        super.body();
-
-        `uvm_info("REG_BASE", "Inside camera base register seq: Camera Enable & Generic Configurations...", UVM_LOW)
-        
-        write_reg(32'h0710901C, 32'h0000_001F); //  Interrupt Mask Reg
-        write_reg(32'h07109024, 32'h0000_0000); //  DMA Control Reg
-        write_reg(32'h07109020, 32'h0000_0001); //  Camera Enable / Control
-
-    endtask
-
     // ========================================================================
-    // Custom API Tasks 
+    // Custom API Tasks (NAMESPACE COLLISION FIXED)
     // ========================================================================
 
     virtual task write_reg(bit [31:0] addr, bit [31:0] data);
         apb_master_tx write_tx = apb_master_tx::type_id::create("write_tx");
         
-        start_item(write_tx); 
-        
-        write_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h; 
+        start_item(write_tx);
+        write_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
         
         if (!write_tx.randomize() with {
-            pwrite        == WRITE;
-            pselx         == SLAVE_0;
-            transfer_size == BIT_32;
+            pwrite        == apb_global_pkg::WRITE;   // <--- Scoped
+            pselx         == apb_global_pkg::SLAVE_0; // <--- Scoped
+            transfer_size == apb_global_pkg::BIT_32;  // <--- Scoped
         }) begin
             `uvm_error("APB_API", "Failed to randomize APB write transaction rules")
         end
@@ -43,30 +30,31 @@ class camera_reg_base_seq extends apb_master_base_seq;
         write_tx.paddr  = addr;
         write_tx.pwdata = data;
         
-        finish_item(write_tx); 
+        finish_item(write_tx);
     endtask
 
     virtual task read_reg(bit [31:0] addr, output bit [31:0] data);
         apb_master_tx read_tx = apb_master_tx::type_id::create("read_tx");
         
         start_item(read_tx);
-        
         read_tx.apb_master_agent_cfg_h = p_sequencer.apb_master_agent_cfg_h;
         
         if (!read_tx.randomize() with {
-            pwrite        == READ; 
-            pselx         == SLAVE_0;
-            transfer_size == BIT_32;
+            pwrite        == apb_global_pkg::READ;    // <--- Scoped
+            pselx         == apb_global_pkg::SLAVE_0; // <--- Scoped
+            transfer_size == apb_global_pkg::BIT_32;  // <--- Scoped
         }) begin
             `uvm_error("APB_API", "Failed to randomize APB read transaction rules")
         end
         
-        read_tx.paddr = addr; 
+        read_tx.paddr = addr;
+        finish_item(read_tx);
         
-        finish_item(read_tx); 
-        
-        data = read_tx.prdata; 
+        data = read_tx.prdata;
     endtask
+
+    // ... (Keep your virtual task body() here) ...
+
 endclass
 
 `endif // CAMERA_REG_CFG_SEQ_SV

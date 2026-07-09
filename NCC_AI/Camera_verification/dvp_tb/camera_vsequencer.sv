@@ -12,6 +12,8 @@ class camera_vsequencer extends uvm_sequencer;
 
     apb_master_agent_config apb_master_agent_cfg_h;
 
+    virtual dma_trig_cam_cntrl_if vif_dma;
+
     function new(string name = "camera_vsequencer", uvm_component parent = null);
         super.new(name, parent);
     endfunction : new

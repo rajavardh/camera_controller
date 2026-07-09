@@ -14,7 +14,7 @@ package camera_ss_pkg;
    
    import axi4_globals_pkg::*;
    import axi4_master_pkg::*;
-   
+      
    // DVP Package
    import dvp_pkg::*;
 

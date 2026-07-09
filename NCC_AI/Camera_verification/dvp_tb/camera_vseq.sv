@@ -8,7 +8,7 @@ class camera_vseq extends uvm_sequence;
     cam_resolution_e vseq_res = RES_QVGA; 
     cam_format_e     vseq_fmt = FMT_RGB888;
 
-    camera_reg_base_seq  cam_cfg; 
+    camera_reg_cfg_seq  cam_cfg; 
     dvp_sequence         dvp_seq;
     camera_axi_read_seq  axi_read; 
 
@@ -20,7 +20,7 @@ class camera_vseq extends uvm_sequence;
         #100ns;
         `uvm_info("VSEQ", "starting cam register configuration...", UVM_LOW)
         
-        cam_cfg = camera_reg_base_seq::type_id::create("cam_cfg");
+        cam_cfg = camera_reg_cfg_seq::type_id::create("cam_cfg");
         cam_cfg.start(p_sequencer.apb_seqr); 
 
         #200ns; 
