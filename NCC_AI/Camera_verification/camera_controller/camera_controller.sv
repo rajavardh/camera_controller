@@ -343,7 +343,7 @@ module camera_controller (
   //=============================================================================================
   // Register Interface
   //=============================================================================================
-  cam_reg_apb_if_stub u_reg_interface (
+  camera_ctrl_reg_interface u_reg_interface (
     .frmt_cam_out                          (frmt_cam),               // output [1:0]
     .res_cam_out                           (res_cam),                // output [1:0]
     .intr_buffer_under_buf_und_out         (intr_buf_undr_err),      // output
