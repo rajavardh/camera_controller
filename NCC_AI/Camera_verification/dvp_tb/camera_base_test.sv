@@ -45,8 +45,6 @@ class camera_base_test extends uvm_test;
       phase.drop_objection(this);
    endtask
 
-   virtual function void init_vseq_knobs(camera_vseq vseq);
-   endfunction
 
    virtual function void end_of_elaboration_phase(uvm_phase phase);
       super.end_of_elaboration_phase(phase);
