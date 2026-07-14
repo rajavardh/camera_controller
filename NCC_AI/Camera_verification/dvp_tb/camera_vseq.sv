@@ -58,11 +58,15 @@ class camera_vseq extends uvm_sequence;
             begin
                while (!dvp_frame_stream_done || p_sequencer.vif_dma.dma_trig_req === 1'b1) begin
                     
+                    `uvm_info("WAIT_REQ", "waiting for dma request.....", UVM_MEDIUM)
                     p_sequencer.vif_dma.monitor_dma_req(sampled_trig_type);
+                    `uvm_info("DRV_ACK", " Received dma request. Driving DMA ACK to DUT", UVM_MEDIUM)
                     
-                    `uvm_info("VSEQ_AXI", $sformatf("DMA Trigger . Type: 2'b%0b", sampled_trig_type), UVM_MEDIUM)
+                    `uvm_info("REQ_ACK_TYP", $sformatf("DMA Trigger/request Type: 2'b%0b", sampled_trig_type), UVM_MEDIUM)
                     
                     p_sequencer.vif_dma.drive_dma_ack(sampled_trig_type); 
+                    
+                    `uvm_info("REQ_ACK_TYP", $sformatf("pixel line count %0d", line_counter), UVM_MEDIUM)
                     
                     target_axi_addr = (line_counter % 2 == 0) ? ping_buffer_addr : pong_buffer_addr;
                     
@@ -75,8 +79,9 @@ class camera_vseq extends uvm_sequence;
                         `uvm_error("VSEQ_AXI", "AXI Read Randomization Parameters Failed!")
                     end
                     
+                    `uvm_info("AXI_RD_SEQ", "AXI read triggered", UVM_MEDIUM)
                     axi_read.start(p_sequencer.axi_rd_seqr);
-                    
+                    `uvm_info("AXI_RD_SEQ", "AXI read completed", UVM_MEDIUM)
                     
                     line_counter++;
                 end

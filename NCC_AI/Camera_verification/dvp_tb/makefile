@@ -174,9 +174,9 @@ compile:
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/mux_sync.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sync_ff.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/intr_req_ack.sv
-	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/axi5_sram_ctrl_stub.sv
+	#TODO DEL $(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/axi5_sram_ctrl_stub.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_wrapper.sv
-	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_8kb_stub.sv
+	#TODO DEL $(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_8kb_stub.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/irq_sync_fast_to_slow.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/pulse_extend_sync.sv
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/cam_disp_dma_req_sync.sv
@@ -186,10 +186,11 @@ compile:
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/camera_ctrl_reg_block.v
 	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/camera_ctrl_reg_interface.v
 	
-	#$(VLOG) -work work $(INC_DIR) $(RTL_DIR)/cam_reg_apb_if_stub.v
+	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/cam_defines.vh
+	$(VLOG) -work work $(INC_DIR) $(COMMON_DIR)/sram_cam_disp_8KB.v
+	
 	$(VLOG) -work work $(INC_DIR) $(RTL_DIR)/camera_data_pipe.sv
 	$(VLOG) -work work $(INC_DIR) $(RTL_DIR)/camera_controller.sv
-
 	# ---------------------------------------------------------
 	# 5. Compile Top
 	# ---------------------------------------------------------

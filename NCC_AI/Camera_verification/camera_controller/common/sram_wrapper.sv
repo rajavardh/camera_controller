@@ -14,7 +14,7 @@ module sram_wrapper (
   output logic [127:0] mem_q                  
 );
 
-sram_8KB_stub U_sram_8KB (
+sram_cam_disp_8KB U_sram_8KB (
   .q     (mem_q                  ),
   .clk   (mem_clk                ),
   .cen   (mem_cen                ),
