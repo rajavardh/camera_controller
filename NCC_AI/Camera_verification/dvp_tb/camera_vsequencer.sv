@@ -6,7 +6,8 @@ class camera_vsequencer extends uvm_sequencer;
 
     apb_master_sequencer apb_seqr;
     dvp_sequencer        dvp_seqr;
-    
+    dma_sequencer        dma_seqr; 
+   
     axi4_master_write_sequencer axi_wr_seqr; 
     axi4_master_read_sequencer  axi_rd_seqr; 
 

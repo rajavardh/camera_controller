@@ -17,7 +17,8 @@ package camera_ss_pkg;
       
    // DVP Package
    import dvp_pkg::*;
-
+   // DMA Package
+   import dma_pkg::*;
    // Integration Components
    `include "camera_vsequencer.sv"
    `include "camera_ss_env.sv"
