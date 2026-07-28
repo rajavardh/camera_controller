@@ -13,13 +13,8 @@ RTL_DIR      = ../camera_controller
 VLOG         = vlog
 VSIM         = vsim
 
-
-# Clean, unbroken include path (no trailing spaces!)
-INC_DIR = +incdir+$(APB_VIP_DIR)/globals+$(APB_VIP_DIR)/hvl_top/env+$(APB_VIP_DIR)/hvl_top/env/virtual_sequencer+$(APB_VIP_DIR)/hvl_top/test/sequences/master_sequences+$(AXI_VIP_DIR)/globals+$(AXI_VIP_DIR)/hvl_top/master+../camera_controller+.+./dvp_agent+./interfaces+./dma_agent
-
 # Clean, unbroken include path (Added +./dma_agent)
 INC_DIR = +incdir+$(APB_VIP_DIR)/globals+$(APB_VIP_DIR)/hvl_top/env+$(APB_VIP_DIR)/hvl_top/env/virtual_sequencer+$(APB_VIP_DIR)/hvl_top/test/sequences/master_sequences+$(AXI_VIP_DIR)/globals+$(AXI_VIP_DIR)/hvl_top/master+../camera_controller+.+./dvp_agent+./dma_agent+./interfaces+$(AXI_CTRL_DIR)
-
 
 # ==============================================================================
 # Compilation Targets
@@ -123,9 +118,9 @@ compile:
 	$(VLOG) -l top.log -work work $(INC_DIR) ./cam_top.sv
 
 sim:
-	vsim -c -wlf waveform.wlf -voptargs="+acc" "+notimingchecks" -l simulation.log -do "assertion fail -action continue -recursive /*; log -r /*; run -all; quit -f" -L work "+UVM_TESTNAME=camera_base_test" "+UVM_MAX_QUIT_COUNT=500" work.top
+	vsim -c -wlf waveform.wlf -voptargs="+acc" "+notimingchecks" -l simulation.log -do "log -r /*; run -all; quit -f" -L work "+UVM_TESTNAME=camera_base_test" work.top
 clean:
-	rm -rf work modelsim.ini transcript waveform.wlf vsim.wlf vsim_stacktrace.vstf top.log simulation.log
+	rm -rf work modelsim.ini transcript waveform.wlf vsimx.wlf vsim_stacktrace.vstf top.log simulation.log
 
 compile_log_err:
 	@echo ""
