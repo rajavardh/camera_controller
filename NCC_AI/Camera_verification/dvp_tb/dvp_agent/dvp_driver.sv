@@ -73,7 +73,14 @@ class dvp_driver extends uvm_driver #(dvp_seq_item);
         vif.cb_drv.dvp_data <= 8'h00; // Clean the bus
         
         repeat(item.h_blank_cycles) @(vif.cb_drv); 
-        
+        if (item.is_end_of_frame == 1'b1) begin
+           `uvm_info("dvp_driver", "End of Frame detected. ", UVM_MEDIUM)
+           vif.cb_drv.dvp_vsync <= 1'b1;
+           repeat(item.v_pulse_cycles) @(vif.cb_drv); 
+           vif.cb_drv.dvp_vsync <= 1'b0;
+           // Allow system settling time before a new frame starts
+           repeat(item.v_blank_cycles) @(vif.cb_drv); 
+        end
     endtask : drive_line
 
 endclass : dvp_driver
