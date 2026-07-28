@@ -120,7 +120,7 @@ VLOG        = vlog
 VSIM        = vsim
 
 # Clean, unbroken include path (no trailing spaces!)
-INC_DIR = +incdir+$(APB_VIP_DIR)/globals+$(APB_VIP_DIR)/hvl_top/env+$(APB_VIP_DIR)/hvl_top/env/virtual_sequencer+$(APB_VIP_DIR)/hvl_top/test/sequences/master_sequences+$(AXI_VIP_DIR)/globals+$(AXI_VIP_DIR)/hvl_top/master+../camera_controller+.+./dvp_agent+./interfaces
+INC_DIR = +incdir+$(APB_VIP_DIR)/globals+$(APB_VIP_DIR)/hvl_top/env+$(APB_VIP_DIR)/hvl_top/env/virtual_sequencer+$(APB_VIP_DIR)/hvl_top/test/sequences/master_sequences+$(AXI_VIP_DIR)/globals+$(AXI_VIP_DIR)/hvl_top/master+../camera_controller+.+./dvp_agent+./interfaces+./dma_agent
 
 # ==============================================================================
 # Compilation Targets
@@ -162,6 +162,7 @@ compile:
 	# 3. Compile Custom Packages & Interfaces
 	# ---------------------------------------------------------
 	$(VLOG) -work work $(INC_DIR) ./dvp_pkg.sv
+	$(VLOG) -work work $(INC_DIR) ./dma_pkg.sv
 	$(VLOG) -work work $(INC_DIR) ./camera_ss_pkg.sv
 	$(VLOG) -work work $(INC_DIR) ./interfaces/dvp_interface.sv
 	$(VLOG) -work work $(INC_DIR) ./interfaces/cam_axi_interface.sv
