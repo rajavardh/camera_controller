@@ -387,7 +387,7 @@ module camera_controller (
   //=============================================================================================
   // SRAM Controller
   //=============================================================================================
-  axi5_sram_ctrl_stub U_SRAM_CTRL (
+  sie300_axi5_sram_ctrl_cam_disp u_axi_ctrl (
     .aclk            (dvp_pclk),                  // input
     .aresetn         (rst_n),                     // input
     .awvalid_s       (i_axi_s_cam_cntrl_awvalid), // input

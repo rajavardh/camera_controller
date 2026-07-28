@@ -1,7 +1,7 @@
 `ifndef DVP_SEQ_ITEM_SV
 `define DVP_SEQ_ITEM_SV
 
-// Hardware Configuration Enums (Moved outside the class)
+// Hardware Configuration Enums 
 typedef enum bit [1:0] {
   FMT_RGB888   = 2'b00, 
   FMT_MJPEG    = 2'b01, 

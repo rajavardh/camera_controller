@@ -47,7 +47,7 @@ package axi4_globals_pkg;
 
   //Parameter: DATA_WIDTH
   //Used to set the data width
-  parameter int DATA_WIDTH =512;
+  parameter int DATA_WIDTH =128;
 
   //Parameter: SLAVE_MEMORY_SIZE
   //Sets the memory size of the slave in KB

@@ -13,7 +13,7 @@ class dvp_sequence extends uvm_sequence #(dvp_seq_item);
         super.new(name);
     endfunction
 
-    virtual task body();
+   virtual task body();
         dvp_seq_item req;
         int total_lines;
 
@@ -51,6 +51,18 @@ class dvp_sequence extends uvm_sequence #(dvp_seq_item);
             }) begin
                 `uvm_error("DVP_SEQ", "Failed to randomize active line!")
             end
+            
+            // =================================================================
+            // PATTERN INJECTION: Force non-zero pixel data
+            // =================================================================
+            // NOTE: Change 'data' to match the actual dynamic array name 
+            // inside your dvp_seq_item.sv (e.g., pixel_data, pixels, payload)
+            foreach (req.dvp_data_bytes[i]) begin
+                // This generates a repeating counter pattern: 00, 01, 02... FF, 00
+                req.dvp_data_bytes[i] = i[7:0]; 
+                // req.dvp_data_bytes[i] = 8'hFF; 
+            end
+            // =================================================================
             
             // assign the loop counter to the item!
             req.line_id = line; 
