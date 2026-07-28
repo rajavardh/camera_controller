@@ -17,7 +17,7 @@ class camera_vseq extends uvm_sequence;
     endfunction
 
     virtual task body();
-        dma_base_sequence dma_sub_seq;
+        dma_base_seq dma_sub_seq; 
         int num_lines;
         bit [31:0] ping_pong_addr; // Tracks the memory bank
         
@@ -41,10 +41,10 @@ class camera_vseq extends uvm_sequence;
             // Thread 2: Acknowledge DMA and Fetch AXI data
             begin
                 for (int i = 0; i < num_lines; i++) begin
-                    dma_sub_seq = dma_base_sequence::type_id::create("dma_sub_seq");
+                    dma_sub_seq = dma_base_seq::type_id::create("dma_sub_seq");
                     dma_sub_seq.start(p_sequencer.dma_seqr);
                     
-                    `uvm_info("VSEQ", $sformatf("Line %0d DMA Handshake success. Request Type: %0b", i, dma_sub_seq.dma_req_ack_type), UVM_HIGH)
+                    `uvm_info("VSEQ", $sformatf("Line %0d DMA Handshake success.", i), UVM_HIGH)
                     
                     axi_read = camera_axi_read_seq::type_id::create("axi_read");
                     
@@ -59,7 +59,7 @@ class camera_vseq extends uvm_sequence;
                         `uvm_error("VSEQ_AXI_ERR", "AXI VIP Randomization Parameters Failed!")
                     end
                     
-                    // Ensure the sequencer name matches your environment
+
                     axi_read.start(p_sequencer.axi_rd_seqr);
                 end
             end

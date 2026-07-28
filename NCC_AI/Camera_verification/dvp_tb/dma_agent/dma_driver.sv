@@ -1,8 +1,6 @@
 
 class dma_driver extends uvm_driver#(dma_seq_item);
 
-class dma_driver extends uvm_driver#(dma_item);
-
     `uvm_component_utils(dma_driver)
 
     virtual dma_trig_cam_cntrl_if vif;
