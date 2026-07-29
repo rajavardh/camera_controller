@@ -1,8 +1,9 @@
+`ifndef DMA_DRIVER_SV
+`define DMA_DRIVER_SV
 
 class dma_driver extends uvm_driver#(dma_seq_item);
-
     `uvm_component_utils(dma_driver)
-
+    
     virtual dma_trig_cam_cntrl_if vif;
 
     function new(string name = "dma_driver", uvm_component parent = null);
@@ -18,29 +19,35 @@ class dma_driver extends uvm_driver#(dma_seq_item);
         forever begin
             seq_item_port.get_next_item(req);
 
-            while (vif.dma_trig_req !== 1'b1) begin
-                @(posedge vif.clk);
-            end
+            case (req.action)
+                DMA_WAIT_REQ: begin
+                    while (vif.dma_trig_req !== 1'b1) begin
+                        @(posedge vif.clk);
+                    end
+                    req.dma_trig_req_type = vif.dma_trig_req_type;
+                end
 
-            vif.dma_trig_ack      <= 1'b1;
-            vif.dma_trig_ack_type <= vif.dma_trig_req_type;
- 
-            req.dma_trig_req_type = vif.dma_trig_req_type;
-            req.dma_trig_ack_type = vif.dma_trig_req_type;
+                DMA_DRIVE_ACK: begin
+                    vif.dma_trig_ack      <= 1'b1;
+                    vif.dma_trig_ack_type <= req.target_ack_type;
+                    
+                    while (vif.dma_trig_req === 1'b1) begin
+                        @(posedge vif.clk);
+                    end
 
-            do begin
-                @(posedge vif.clk);
-            end while (vif.dma_trig_req === 1'b1);
+                    repeat(2) @(posedge vif.clk); 
 
-            vif.dma_trig_ack      <= 1'b0;
-            vif.dma_trig_ack_type <= 2'b00;
-            @(posedge vif.clk);
+                    vif.dma_trig_ack      <= 1'b0;
+                    vif.dma_trig_ack_type <= 2'b00;
+                    
+                    @(posedge vif.clk);
+                end
+            endcase
 
             seq_item_port.item_done();
         end
     endtask
 endclass
 
-
-
+`endif // DMA_DRIVER_SV
 

@@ -17,8 +17,6 @@ class camera_base_test extends uvm_test;
    virtual function void build_phase(uvm_phase phase);
       super.build_phase(phase);
       env = camera_ss_env::type_id::create("env", this);
-  //    srv = new();
-  //    uvm_report_server::set_server(srv);
    endfunction
 
    // Run Phase
@@ -31,12 +29,18 @@ class camera_base_test extends uvm_test;
 
       vseq = camera_vseq::type_id::create("vseq");
 
-      `uvm_info("TEST", "Configuring virtual sequence hardware control knobs...", UVM_LOW)
-      vseq.vseq_res = this.test_res;
-      vseq.vseq_fmt = this.test_fmt;
+      `uvm_info("TEST", "Configuring virtual sequence hardware control knobs via constraints...", UVM_LOW)
+      
+      if (!vseq.randomize() with {
+         vseq_res      == local::test_res;
+         vseq_fmt      == local::test_fmt;
+         axi_base_addr == 32'h0800_0080; // Corrected SoC Dump base address mapping
+      }) begin
+         `uvm_error("TEST_RAND_ERR", "Virtual sequence configuration randomization failed!")
+      end
 
       `uvm_info("TEST", $sformatf("Starting Subsystem Virtual Sequence (Resolution: %s, Format: %s)...",
-                                  test_res.name(), test_fmt.name()), UVM_LOW)
+                                  vseq.vseq_res.name(), vseq.vseq_fmt.name()), UVM_LOW)
 
       vseq.start(env.v_seqr);
 
@@ -44,7 +48,6 @@ class camera_base_test extends uvm_test;
 
       phase.drop_objection(this);
    endtask
-
 
    virtual function void end_of_elaboration_phase(uvm_phase phase);
       super.end_of_elaboration_phase(phase);
@@ -54,3 +57,4 @@ class camera_base_test extends uvm_test;
 endclass : camera_base_test
 
 `endif // CAMERA_BASE_TEST_SV
+

@@ -5,8 +5,9 @@ class camera_vseq extends uvm_sequence;
     `uvm_object_utils(camera_vseq)
     `uvm_declare_p_sequencer(camera_vsequencer)
 
-    cam_resolution_e vseq_res = RES_QVGA; 
-    cam_format_e     vseq_fmt = FMT_RGB888;
+    rand cam_resolution_e vseq_res; 
+    rand cam_format_e     vseq_fmt;
+    rand bit [31:0]       axi_base_addr;
 
     camera_reg_cfg_seq   cam_cfg; 
     dvp_sequence         dvp_seq;
@@ -19,53 +20,55 @@ class camera_vseq extends uvm_sequence;
     virtual task body();
         dma_base_seq dma_sub_seq; 
         int num_lines;
-        bit [31:0] ping_pong_addr; // Tracks the memory bank
         
-        // 1. Configure the APB Registers
         cam_cfg = camera_reg_cfg_seq::type_id::create("cam_cfg");
         cam_cfg.start(p_sequencer.apb_seqr); 
 
-        // 2. Set mechanical loop based on resolution
-        if (vseq_res == RES_QVGA) num_lines = 240;
-        else                      num_lines = 480; 
+        dvp_seq = dvp_sequence::type_id::create("dvp_seq");
+        if (!dvp_seq.randomize() with {
+            target_res == local::vseq_res; 
+            target_fmt == local::vseq_fmt;
+        }) begin
+            `uvm_error("VSEQ_RAND_ERR", "dvp_seq randomization failed!")
+        end
+
+        num_lines = (this.vseq_res == RES_QVGA) ? 240 : 480; 
         
         fork
-            // Thread 1: Drive the DVP pixels
             begin
-                dvp_seq = dvp_sequence::type_id::create("dvp_seq");
-                dvp_seq.target_res = this.vseq_res; 
-                dvp_seq.target_fmt = this.vseq_fmt;
                 dvp_seq.start(p_sequencer.dvp_seqr);
             end
 
-            // Thread 2: Acknowledge DMA and Fetch AXI data
             begin
                 for (int i = 0; i < num_lines; i++) begin
+                    bit [1:0] active_req_type;
+
                     dma_sub_seq = dma_base_seq::type_id::create("dma_sub_seq");
+                    dma_sub_seq.seq_action = DMA_WAIT_REQ;
                     dma_sub_seq.start(p_sequencer.dma_seqr);
-                    
-                    `uvm_info("VSEQ", $sformatf("Line %0d DMA Handshake success.", i), UVM_HIGH)
-                    
+                    active_req_type = dma_sub_seq.dma_req_ack_type;
+
                     axi_read = camera_axi_read_seq::type_id::create("axi_read");
-                    
-                    // Toggle between Ping (0x0000) and Pong (0x1000) buffers
-                    if (i % 2 == 0) ping_pong_addr = 32'h0800_0000;
-                    else            ping_pong_addr = 32'h0800_1000;
-
-                    // Pass the toggled 32-bit address down to the AXI sequence
-                    if (!axi_read.randomize() with {
-                        target_addr  == ping_pong_addr; 
+                    if (!axi_read.randomize() with { 
+                        target_addr == local::axi_base_addr; 
                     }) begin
-                        `uvm_error("VSEQ_AXI_ERR", "AXI VIP Randomization Parameters Failed!")
+                        `uvm_error("VSEQ_AXI_ERR", "AXI master configuration failed!")
                     end
-                    
-
                     axi_read.start(p_sequencer.axi_rd_seqr);
+                    
+                    `uvm_info("VSEQ_LINE", $sformatf("Successfully read line index %0d via AXI.", i), UVM_HIGH)
+
+                    dma_sub_seq = dma_base_seq::type_id::create("dma_sub_seq");
+                    dma_sub_seq.seq_action   = DMA_DRIVE_ACK;
+                    dma_sub_seq.seq_ack_type = active_req_type;
+                    dma_sub_seq.start(p_sequencer.dma_seqr);
                 end
             end
         join
         
-        `uvm_info("VSEQ_DONE", "Virtual Sequence Completed Successfully.", UVM_LOW)
+        `uvm_info("VSEQ_COMPLETE", "Simulation virtual frame processing sequence completed perfectly.", UVM_LOW)
     endtask 
 endclass
+
 `endif // CAMERA_VSEQ_SV
+
