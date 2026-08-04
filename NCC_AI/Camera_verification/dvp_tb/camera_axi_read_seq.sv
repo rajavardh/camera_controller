@@ -14,35 +14,59 @@ class camera_axi_read_seq extends uvm_sequence #(axi4_master_tx);
         axi4_master_tx req;
         uvm_sequence_item rsp;
         int current_addr;
+        semaphore data_done ; 
+        
+	current_addr = target_addr;
+        data_done = new(0); 
 
-        current_addr = target_addr;
+        fork
+            begin : RESPONSE_CONSUMER_LOOP
+                uvm_sequence_item rsp;
+                axi4_master_tx axi_rsp_pkt;
 
-        for (int i = 0; i < 4; i++) begin
+                for (int j = 0; j < 8; j++) begin
+                    get_response(rsp); 
+                    
+                    if ($cast(axi_rsp_pkt, rsp)) begin
+                        `uvm_info("CAM_AXI_SEQ", $sformatf("[BURST DETECTED] Index: %0d | Base Address: 'h%0h ", j, axi_rsp_pkt.araddr), UVM_LOW)
+                        
+                        axi_rsp_pkt.print(); 
+                    end 
+                    else begin
+                        `uvm_error("CAM_AXI_SEQ", "Polymorphic casting failed! Response object type mismatch.")
+                    end
+                    
+                    data_done.put(1);  
+                end
+            end
+        join_none 
+         
+
+        for (int i = 0; i < 8; i++) begin
             req = axi4_master_tx::type_id::create("req");
+            
             start_item(req);
             
-            // Randomize empty to satisfy VIP base rules
-            if(!req.randomize()) begin
-                `uvm_error("CAM_AXI_SEQ", "VIP Base Randomization failed!")
+            if(!req.randomize() with {
+                tx_type       == axi4_globals_pkg::READ;              
+                arsize        == axi4_globals_pkg::READ_16_BYTES;       
+                arburst       == axi4_globals_pkg::READ_INCR;         
+                transfer_type == axi4_globals_pkg::OUTSTANDING_READ;  
+                araddr        == local::current_addr;       
+                arlen         == 8'd7; // 8 beats per burst
+                arid        == axi4_globals_pkg::ARID_0; 
+            }) begin
+                `uvm_error("CAM_AXI_SEQ", "VIP Unified Randomization failed!")
             end
             
-            // Procedural assignments bypass the constraint solver entirely
-            req.tx_type       = axi4_globals_pkg::READ;              
-            req.arsize        = axi4_globals_pkg::READ_16_BYTES;       
-            req.arburst       = axi4_globals_pkg::READ_INCR;         
-            req.transfer_type = axi4_globals_pkg::NON_OUTSTANDING_READ;  
-            
-            req.araddr        = current_addr;       
-            req.arlen         = 8'd59; 
-            req.arid          = axi4_globals_pkg::ARID_0; 
-            
             finish_item(req);
-            get_response(rsp, req.get_transaction_id());
 
-            // Advance address by 15 beats * 16 bytes per beat = 240 bytes
-            current_addr = current_addr + 240; 
+            current_addr = current_addr + 128;
         end
+        `uvm_info("CAM_AXI_SEQ", "Waiting for all data bursts to return...", UVM_LOW)
+        data_done.get(8); 
+        `uvm_info("CAM_AXI_SEQ", "All data bursts received for this line.", UVM_LOW)
     endtask
-endclass
+endclass 
 
 `endif // CAMERA_AXI_READ_SEQ_SV

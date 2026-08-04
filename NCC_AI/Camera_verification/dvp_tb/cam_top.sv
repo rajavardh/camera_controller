@@ -25,7 +25,6 @@ module top;
     logic presetn;       
     
     logic dvp_pclk;      
-    wire  cam_clk_net;
     
     // =========================================================
     // Clock Generation
@@ -38,7 +37,7 @@ module top;
     
     always #5  clk         = ~clk;        // 100 MHz System Clock
     always #5  pclk        = ~pclk;       // 100 MHz APB Clock
-    always #10 dvp_pclk    = ~dvp_pclk;   // 50 MHz Camera Pixel Clock
+    always #5 dvp_pclk    = ~dvp_pclk;   // 100 MHz Camera Pixel Clock
     
     //assign cam_clk_net = clk;
     // =========================================================
@@ -128,7 +127,7 @@ module top;
     // =========================================================
     camera_controller dut (
         .rst_n                      (rst_n),
-        .cam_clk                    (cam_clk_net), 
+        .cam_clk                    (dvp_if.cam_clk), 
 
         .dvp_vsync                  (dvp_if.dvp_vsync),
         .dvp_href                   (dvp_if.dvp_href),

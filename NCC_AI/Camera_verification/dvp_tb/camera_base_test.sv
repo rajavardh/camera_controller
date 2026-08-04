@@ -34,7 +34,7 @@ class camera_base_test extends uvm_test;
       if (!vseq.randomize() with {
          vseq_res      == local::test_res;
          vseq_fmt      == local::test_fmt;
-         axi_base_addr == 32'h0800_0080; // Corrected SoC Dump base address mapping
+         axi_base_addr == 32'h0000_0000; 
       }) begin
          `uvm_error("TEST_RAND_ERR", "Virtual sequence configuration randomization failed!")
       end
@@ -52,6 +52,7 @@ class camera_base_test extends uvm_test;
    virtual function void end_of_elaboration_phase(uvm_phase phase);
       super.end_of_elaboration_phase(phase);
       uvm_top.print_topology();
+      env.axi_vip_env.axi4_master_drv_proxy_h.set_report_id_verbosity("axi4_master_driver_proxy", UVM_LOW);
    endfunction
 
 endclass : camera_base_test

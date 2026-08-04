@@ -12,7 +12,7 @@ class camera_vseq extends uvm_sequence;
     camera_reg_cfg_seq   cam_cfg; 
     dvp_sequence         dvp_seq;
     camera_axi_read_seq  axi_read; 
-
+    
     function new(string name = "camera_vseq");
         super.new(name);
     endfunction
@@ -34,7 +34,7 @@ class camera_vseq extends uvm_sequence;
 
         num_lines = (this.vseq_res == RES_QVGA) ? 240 : 480; 
         
-        fork
+	fork
             begin
                 dvp_seq.start(p_sequencer.dvp_seqr);
             end
