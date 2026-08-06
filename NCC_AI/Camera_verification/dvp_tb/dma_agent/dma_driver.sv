@@ -21,28 +21,29 @@ class dma_driver extends uvm_driver#(dma_seq_item);
 
             case (req.action)
                 DMA_WAIT_REQ: begin
-                    while (vif.dma_trig_req !== 1'b1) begin
-                        @(posedge vif.clk);
+                    while (vif.master_cb.dma_trig_req !== 1'b1) begin
+                        @(vif.master_cb); 
                     end
-                    req.dma_trig_req_type = vif.dma_trig_req_type;
+                    req.dma_trig_req_type = vif.master_cb.dma_trig_req_type;
                 end
 
                 DMA_DRIVE_ACK: begin
-                    vif.dma_trig_ack      <= 1'b1;
-                    vif.dma_trig_ack_type <= req.target_ack_type;
+                    vif.master_cb.dma_trig_ack      <= 1'b1;
+                    vif.master_cb.dma_trig_ack_type <= req.target_ack_type-1; //FIXME 
                     
-                    while (vif.dma_trig_req === 1'b1) begin
-                        @(posedge vif.clk);
+                    while (vif.master_cb.dma_trig_req === 1'b1) begin
+                        @(vif.master_cb);
                     end
 
-                    repeat(2) @(posedge vif.clk); 
+                    repeat(2) @(vif.master_cb); 
 
-                    vif.dma_trig_ack      <= 1'b0;
-                    vif.dma_trig_ack_type <= 2'b00;
+                    vif.master_cb.dma_trig_ack      <= 1'b0;
+                    vif.master_cb.dma_trig_ack_type <= 2'b00;
                     
-                    @(posedge vif.clk);
+                    @(vif.master_cb);
                 end
             endcase
+
 
             seq_item_port.item_done();
         end

@@ -41,10 +41,6 @@ class dvp_sequence extends uvm_sequence #(dvp_seq_item);
                 `uvm_error("DVP_SEQ", "Failed to randomize active line!")
             end
             
-            foreach (req.dvp_data_bytes[i]) begin
-                req.dvp_data_bytes[i] = i[7:0]; 
-            end
-            
             req.line_id = line; 
             
             finish_item(req);
