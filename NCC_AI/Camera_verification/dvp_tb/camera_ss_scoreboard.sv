@@ -18,13 +18,17 @@ class camera_ss_scoreboard extends uvm_scoreboard;
 
     int match_count;
     int mismatch_count;
+    
+    // Tracks the AXI payload to filter out hardware SRAM padding
+    int axi_byte_count_this_line; 
 
     function new(string name = "camera_ss_scoreboard", uvm_component parent = null);
         super.new(name, parent);
-        match_count        = 0;
-        mismatch_count     = 0;
-        expected_count     = 0;
-        actual_count       = 0;
+        match_count              = 0;
+        mismatch_count           = 0;
+        expected_count           = 0;
+        actual_count             = 0;
+        axi_byte_count_this_line = 0;
     endfunction
 
     virtual function void build_phase(uvm_phase phase);
@@ -43,14 +47,25 @@ class camera_ss_scoreboard extends uvm_scoreboard;
     endfunction
 
     virtual function void write_axi(axi4_master_tx txn);
-        // THE FIX: Safely unpack the entire 60-beat burst array
         int num_beats = txn.arlen + 1;
         int valid_bytes_per_beat = 16; // Based on AXI arsize == READ_16_BYTES
         
         for (int beat = 0; beat < num_beats; beat++) begin
             for (int byte_idx = 0; byte_idx < valid_bytes_per_beat; byte_idx++) begin
-                actual_pixel_q.push_back(txn.rdata[beat][(byte_idx * 8) +: 8]);
-                actual_count++;
+                
+                // ONLY push the valid pixels (first 960 bytes). Discard the 64 bytes of hardware padding!
+                if (axi_byte_count_this_line < 960) begin
+                    actual_pixel_q.push_back(txn.rdata[beat][(byte_idx * 8) +: 8]);
+                    actual_count++;
+                end
+                
+                axi_byte_count_this_line++;
+                
+                // Reset counter when the full 1024-byte AXI read boundary is reached for the line
+                if (axi_byte_count_this_line == 1024) begin
+                    axi_byte_count_this_line = 0;
+                end
+                
             end
         end
     endfunction
@@ -73,14 +88,16 @@ class camera_ss_scoreboard extends uvm_scoreboard;
             if (exp_p === act_p) begin
                 match_count++;
                 
+                
+                `uvm_info("SCB_BYTE_MATCH", $sformatf("Data Match: Expected = %02h | AXI Read = %02h", exp_p, act_p), UVM_LOW)
+                
                 if (match_count % 960 == 0) begin
-                    `uvm_info("SCB_MATCH", $sformatf("Line %0d Verified! %0d consecutive pixels matched perfectly.", 
-                                                      (match_count/960)-1, match_count), UVM_NONE)
+                    `uvm_info("SCB_MATCH", $sformatf("Line %0d Verified! All 960 bytes perfectly matched bit-for-bit.", 
+                                                      (match_count/960)-1), UVM_NONE)
                 end
                 
             end else begin
-                // THIS will print the shift (Expected 01 -> AXI Read 10)
-                `uvm_error("SCB_MISMATCH", $sformatf("CORRUPTION! Expected: %02h | AXI Read: %02h", exp_p, act_p))
+                `uvm_error("SCB_MISMATCH", $sformatf("CORRUPTION at byte %0d! Expected: %02h | AXI Read: %02h", match_count, exp_p, act_p))
                 mismatch_count++;
             end
         end
@@ -89,7 +106,7 @@ class camera_ss_scoreboard extends uvm_scoreboard;
     virtual function void report_phase(uvm_phase phase);
         super.report_phase(phase);
         `uvm_info("SCB_REPORT", "===============================================", UVM_NONE)
-        `uvm_info("SCB_REPORT", $sformatf(" Total Pixels Verified  : %0d", match_count), UVM_NONE)
+        `uvm_info("SCB_REPORT", $sformatf(" Total bytes Verified  : %0d", match_count), UVM_NONE)
         `uvm_info("SCB_REPORT", $sformatf(" Total Data Corruptions : %0d", mismatch_count), UVM_NONE)
         `uvm_info("SCB_REPORT", $sformatf(" Unmatched Expected Pix : %0d", expected_pixel_q.size()), UVM_NONE)
         `uvm_info("SCB_REPORT", $sformatf(" Unmatched Actual Pix   : %0d", actual_pixel_q.size()), UVM_NONE)

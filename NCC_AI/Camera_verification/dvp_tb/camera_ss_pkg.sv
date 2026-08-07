@@ -21,6 +21,7 @@ package camera_ss_pkg;
    import dma_pkg::*;
    // Integration Components
    `include "camera_vsequencer.sv"
+   `include "camera_ss_scoreboard.sv"
    `include "camera_ss_env.sv"
 
    // Sequences & Test

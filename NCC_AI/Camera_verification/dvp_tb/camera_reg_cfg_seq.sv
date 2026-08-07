@@ -18,7 +18,12 @@ class camera_reg_cfg_seq extends apb_master_base_seq; // (or your specific APB b
         write_reg(32'h07109024, 32'h0000_0000); //  DMA Control Reg
         write_reg(32'h07109020, 32'h0000_0001); //  Camera Enable / Control
         read_reg(32'h07109020,read_data ); //  Camera Enable / Control
-        $display($time,"************************* read_cam_en:%0h ***************************",read_data);  //TODO DEL
+        
+        if (read_data == 32'h0000_0001) begin
+            `uvm_info("APB_VERIFY", "**-----------SUCCESS: Camera Enable register correctly holds '1'---------**", UVM_NONE)
+        end else begin
+            `uvm_error("APB_VERIFY", $sformatf("FAIL: Expected '1', but read back '%0h'", read_data))
+        end
     endtask
 
 
