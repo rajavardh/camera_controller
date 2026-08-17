@@ -3,6 +3,11 @@
 
 class camera_reg_cfg_seq extends apb_master_base_seq; // (or your specific APB base sequence)
     `uvm_object_utils(camera_reg_cfg_seq)
+    
+    // 1. Hardware Configuration Variables passed from the Virtual Sequence
+    cam_format_e     cfg_fmt;
+    cam_resolution_e cfg_res;
+
     bit[31:0] read_data;
     
     function new(string name = "camera_reg_cfg_seq");
@@ -10,17 +15,35 @@ class camera_reg_cfg_seq extends apb_master_base_seq; // (or your specific APB b
     endfunction
 
     virtual task body();
+        bit [31:0] format_reg_val;
+        bit [31:0] res_reg_val;
+
         super.body();
     
-        `uvm_info("REG_BASE", "Inside camera base register seq: Camera Enable & Generic Configurations...", UVM_LOW)
+        `uvm_info("REG_BASE", $sformatf("Configuring DUT -> Format: %s, Resolution: %s", cfg_fmt.name(), cfg_res.name()), UVM_LOW)
         
-        write_reg(32'h0710901C, 32'h0000_0000); //  Interrupt Mask Reg
-        write_reg(32'h07109024, 32'h0000_0000); //  DMA Control Reg
-        write_reg(32'h07109020, 32'h0000_0001); //  Camera Enable / Control
-        read_reg(32'h07109020,read_data ); //  Camera Enable / Control
+        // 1. FLUSH PIPELINE: Disable Camera Interface first (Offset 0x20)
+        write_reg(32'h07109020, 32'h0000_0000); 
+
+        // 2. CONFIGURE FORMAT (Offset 0x00)
+        format_reg_val = 32'(cfg_fmt); // Cast the UVM enum directly to a 32-bit register value!
+        write_reg(32'h07109000, format_reg_val);
+
+        // 3. CONFIGURE RESOLUTION (Offset 0x04)
+        res_reg_val = 32'(cfg_res);    // Cast the UVM enum directly to a 32-bit register value!
+        write_reg(32'h07109004, res_reg_val);
         
+        // 4. CONFIGURE INTERRUPTS AND DMA 
+        write_reg(32'h0710901C, 32'h0000_0000); // Interrupt Mask Reg (Offset 0x1C)
+        write_reg(32'h07109024, 32'h0000_0000); // DMA Control Reg (Offset 0x24)
+        
+        // 5. RE-ENABLE CAMERA INTERFACE (Offset 0x20)
+        write_reg(32'h07109020, 32'h0000_0001); 
+        
+        // 6. VERIFY ENABLE
+        read_reg(32'h07109020, read_data); 
         if (read_data == 32'h0000_0001) begin
-            `uvm_info("APB_VERIFY", "**-----------SUCCESS: Camera Enable register correctly holds '1'---------**", UVM_NONE)
+            `uvm_info("APB_VERIFY", "***-----------SUCCESS: Camera Enable register correctly holds '1'---------***", UVM_NONE)
         end else begin
             `uvm_error("APB_VERIFY", $sformatf("FAIL: Expected '1', but read back '%0h'", read_data))
         end

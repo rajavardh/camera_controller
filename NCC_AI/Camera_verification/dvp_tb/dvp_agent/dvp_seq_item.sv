@@ -25,17 +25,18 @@ class dvp_seq_item extends uvm_sequence_item;
   rand cam_format_e     format_cfg;
   rand cam_resolution_e res_cfg;
   
-  // 3. Derived Variables 
+  // 3. Derived Variables (Must be rand for the solver to size the array)
   rand int pixels_per_line;
   rand int line_count;       
   
+  // State variable: MUST be set by the sequence BEFORE calling randomize()
   int line_id;               
   
   rand bit [2:0] driver_sel; 
 
   // 4. Timing Metadata
-  rand bit      is_start_of_frame;
-  rand bit      is_end_of_frame;    
+  rand bit     is_start_of_frame;
+  rand bit     is_end_of_frame;    
   rand int h_blank_cycles;     
   rand int v_pulse_cycles;     
   rand int v_blank_cycles;     
@@ -46,7 +47,7 @@ class dvp_seq_item extends uvm_sequence_item;
     `uvm_field_enum(cam_resolution_e, res_cfg, UVM_ALL_ON)
     `uvm_field_int(pixels_per_line, UVM_ALL_ON | UVM_DEC)
     `uvm_field_int(line_count, UVM_ALL_ON | UVM_DEC)
-    `uvm_field_int(line_id, UVM_ALL_ON | UVM_DEC) // ADDED TO MACROS
+    `uvm_field_int(line_id, UVM_ALL_ON | UVM_DEC) 
     `uvm_field_int(driver_sel, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(is_start_of_frame, UVM_ALL_ON | UVM_BIN)
     `uvm_field_int(is_end_of_frame, UVM_ALL_ON | UVM_BIN)
@@ -67,18 +68,26 @@ class dvp_seq_item extends uvm_sequence_item;
     if (res_cfg == RES_QVGA)  { pixels_per_line == 320;  line_count == 240;  }
   }
 
-  // 2. Map Format Enum to Array Size 
+  // 2. Map Format Enum to Physical Array Size 
   constraint c_payload_size {
-    if (format_cfg == FMT_RGB888 || format_cfg == FMT_MJPEG) {
+    
+    // RGB888: Always 3 bytes per pixel
+    if (format_cfg == FMT_RGB888) {
       dvp_data_bytes.size() == (pixels_per_line * 3);
     } 
-    else if (format_cfg == FMT_YUV420_I) {
-      // Interleaved YUYV is roughly 2 bytes per pixel
-      dvp_data_bytes.size() == (pixels_per_line * 2);
+    
+    // YUV420 (Interleaved AND Planar): Alternating line widths over the physical DVP pins
+    else if (format_cfg == FMT_YUV420_I || format_cfg == FMT_YUV420_P) {
+      if (line_id % 2 == 0) {
+        dvp_data_bytes.size() == (pixels_per_line * 2); // Even lines: YUYV (2 bytes/pix)
+      } else {
+        dvp_data_bytes.size() == pixels_per_line;       // Odd lines: YYYY (1 byte/pix)
+      }
     } 
-    else if (format_cfg == FMT_YUV420_P) { 
-      // Planar streams 1 plane at a time (1 byte per pixel for Y)
-      dvp_data_bytes.size() == pixels_per_line; 
+    
+    // MJPEG: Fixed DVP line buffer width (padded with 0xFF later)
+    else if (format_cfg == FMT_MJPEG) {
+      dvp_data_bytes.size() == (pixels_per_line * 2); 
     }
   }
 

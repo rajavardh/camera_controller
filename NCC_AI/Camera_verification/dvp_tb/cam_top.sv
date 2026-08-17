@@ -112,12 +112,7 @@ module top;
             assign dut_rdata_clean[i] = (dut_rdata[i] === 1'bx || dut_rdata[i] === 1'bz) ? 1'b0 : dut_rdata[i];
         end
     endgenerate
-
-    // Replicate the 128-bit DUT data across all 4 segments of the 512-bit VIP bus
-    assign axi_vip_if.rdata[127:0]   = dut_rdata_clean;
-    assign axi_vip_if.rdata[255:128] = dut_rdata_clean;
-    assign axi_vip_if.rdata[383:256] = dut_rdata_clean;
-    assign axi_vip_if.rdata[511:384] = dut_rdata_clean;
+    assign axi_vip_if.rdata = dut_rdata_clean;
     
     assign axi_vip_if.ruser = '0;
     assign axi_vip_if.buser = '0;
