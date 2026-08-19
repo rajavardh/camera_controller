@@ -12,7 +12,7 @@ class dvp_driver extends uvm_driver #(dvp_seq_item);
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        // Ensure name perfectly matches what is set in top.sv
+
         if (!uvm_config_db#(virtual camera_dvp_if)::get(this, "", "dvp_vif", vif)) begin
             `uvm_fatal(get_type_name(), "Failed to extract virtual camera_dvp_if from uvm_config_db!")
         end

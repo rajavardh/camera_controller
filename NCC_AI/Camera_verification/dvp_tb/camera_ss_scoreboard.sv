@@ -187,7 +187,7 @@ class camera_ss_scoreboard extends uvm_scoreboard;
 
             if (exp_p === act_p) begin
                 match_count++;
-                `uvm_info("SCB_BYTE_MATCH", $sformatf("Data Match (Byte %0d): Expected = %02h | AXI Read = %02h", match_count, exp_p, act_p), UVM_HIGH)
+                `uvm_info("SCB_BYTE_MATCH", $sformatf("Data Match (Byte %0d): Expected = %02h | AXI Read = %02h", match_count, exp_p, act_p), UVM_NONE)
                 if (match_count % 10000 == 0) begin
                     `uvm_info("SCB_MATCH", $sformatf("Verified %0d valid bytes perfectly...", match_count), UVM_NONE)
                 end
